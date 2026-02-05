@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>First Impression</title>
+  <link rel="stylesheet" href="firstimpression.css" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+
+</head>
+
+<body>
+
+  <div id="app">
+
+    <!-- HEADER -->
+    <header>
+      <h1>First Impression</h1>
+      <p id="subtitle">See how others see you</p>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+
+      <!-- PROFILE PAGE -->
+      <section id="profilePage" class="page active">
+        <div class="card">
+          <h2>Your First Impression</h2>
+
+          <div class="photo-upload">
+            <input type="file" id="photoInput" accept="image/*" hidden />
+            <div id="photoPreview" class="photo-preview">
+              <span>Upload a photo of yourself</span>
+            </div>
+          </div>
+
+          <div id="preResultsAction">
+      <button id="startRatingBtn" class="primary-btn" disabled>
+        Start Rating Others
+      </button>
+      <p class="hint">
+        You must rate 10 others to unlock your results.
+      </p>
+    </div>
+
+    <div id="resultsContainer" class="hidden">
+      <div class="results-divider"></div>
+      <h3>Community Score</h3>
+      <div class="my-avg-rating">0.0</div>
+      <div class="curve-container">
+  <div class="curve-title">Global Comparison</div>
+  
+  <div class="graph-wrapper">
+    <svg viewBox="0 0 100 35" preserveAspectRatio="none" class="bell-curve">
+      <path d="M0,35 C20,35 30,5 50,5 C70,5 80,35 100,35" 
+            fill="url(#gradientFill)" />
+      
+      <defs>
+        <linearGradient id="gradientFill" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="rgba(255, 255, 255, 0.4)" />
+          <stop offset="100%" stop-color="rgba(255, 255, 255, 0.05)" />
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <div id="userMarker" class="marker">
+      <div class="marker-dot"></div>
+      <div class="marker-line"></div>
+      <div class="marker-label">YOU</div>
+    </div>
+    
+    <div class="axis-labels">
+      <span>1</span>
+      <span>5</span>
+      <span>10</span>
+    </div>
+  </div>
+  
+  <p id="percentileText" class="percentile-text">Better than 65% of profiles</p>
+</div>
+      <p class="results-note">Based on anonymous impressions</p>
+      <div class="results-divider"></div>
+  <h3>Impressions</h3>
+  <div id="impressionsList" class="impressions-grid">
+     </div>
+    </div>
+
+          <button id="privacyBtn" class="link-btn">
+            Privacy & Terms
+          </button>
+
+        </div>
+      </section>
+
+      <!-- RATE PAGE -->
+      <section id="ratePage" class="page">
+        <div class="card">
+
+          <div class="rate-photo">
+            <img id="rateImage" src="" alt="Person to rate" />
+            <div id="photoRatingBadge" class="hidden">
+              <span>–</span>
+            </div>
+            <div id="average-overlay">
+              <span class="avg-label">Average Rating</span>
+              <span class="avg-number">0.0</span>
+            </div>
+
+          </div>
+
+
+          <div class="rating-wrapper">
+
+            <div class="rating-scale" id="ratingGrid">
+              <div id="ratingIndicator" class="selection-indicator"></div>
+              <button class="rating-btn low" data-value="1">1</button>
+              <button class="rating-btn low" data-value="2">2</button>
+              <button class="rating-btn low" data-value="3">3</button>
+
+              <button class="rating-btn mid" data-value="4">4</button>
+              <button class="rating-btn mid" data-value="5">5</button>
+              <button class="rating-btn mid" data-value="6">6</button>
+
+              <button class="rating-btn high" data-value="7">7</button>
+              <button class="rating-btn high" data-value="8">8</button>
+              <button class="rating-btn high" data-value="9">9</button>
+
+              <button class="rating-btn extreme" data-value="10">10</button>
+            </div>
+
+          </div>
+
+
+
+          <input type="text" id="oneWordInput" maxlength="15" placeholder="One word (optional)" />
+
+          <button id="submitRatingBtn" class="primary-btn">
+            Submit Rating
+          </button>
+
+          <div class="progress-container">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+          <p class="counter">
+  Rated <span id="ratedCount">0</span><span id="ratingLimit"> / 10</span>
+</p>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <nav>
+      <button id="tabProfile" class="tab active">You</button>
+      <button id="tabRate" class="tab locked">Rate</button>
+    </nav>
+    <div id="privacyModal" class="modal hidden">
+      <div class="modal-content">
+        <h2>Privacy & Terms</h2>
+
+        <div class="modal-text">
+          <p><strong>Age Requirement</strong></p>
+          <p>
+            First Impression is intended for users 18 years of age or older.
+            By using this site, you confirm that you are at least 18.
+          </p>
+
+          <p><strong>Photo Consent</strong></p>
+          <p>
+            By uploading a photo, you voluntarily give consent for your image
+            to be shown anonymously to other users for the purpose of ratings
+            and one-word impressions.
+          </p>
+
+          <p><strong>Anonymity</strong></p>
+          <p>
+            All ratings and one-word responses are anonymous. We do not display
+            who rated or commented on your photo.
+          </p>
+
+          <p><strong>User Responsibility</strong></p>
+          <p>
+            First Impression is not responsible for user-submitted content,
+            including ratings or words provided by other users.
+            Participation is voluntary and at your own discretion.
+          </p>
+
+          <p><strong>Content Moderation</strong></p>
+          <p>
+            We reserve the right to remove content that is abusive, explicit,
+            or violates basic community standards.
+          </p>
+
+          <p><strong>Data Usage</strong></p>
+          <p>
+            Uploaded photos and responses are used solely to operate the
+            First Impression experience and are not sold or shared with third parties.
+          </p>
+        </div>
+
+        <button id="closePrivacyBtn" class="primary-btn armed">
+          Close
+        </button>
+      </div>
+    </div>
+
+  </div>
+  <script src="firstimpression.js" type="module"></script>
+</body>
+
+</html>

@@ -1,0 +1,788 @@
+* {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #0f0f12;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+}
+@keyframes juicyPop {
+  0% {
+    transform: scale(0.95);
+    filter: brightness(0.8);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+.shake-animation {
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+#app {
+  width: 100%;
+  max-width: 420px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  padding: 24px 20px 10px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+#subtitle {
+  color: #aaa;
+  font-size: 14px;
+}
+
+main {
+  flex: 1;
+  padding: 20px;
+}
+
+/* 1. Container Setup */
+/* 1. The main container stays as the "window" */
+main {
+  position: relative;
+  overflow: hidden; /* This keeps the pages from showing when they are off-screen */
+  width: 100%;
+  /* Use flex-grow or a calculated height so it fills the space between header and nav */
+  height: calc(100vh - 130px); 
+}
+
+/* 2. The pages now handle the scrolling */
+.page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; /* Fills the main container */
+  
+  /* --- THE FIX --- */
+  overflow-y: auto;  /* Allows vertical scrolling */
+  overflow-x: hidden; /* Prevents awkward side-shaking */
+  -webkit-overflow-scrolling: touch; /* Makes scrolling smooth on iPhones */
+  
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+  opacity: 0;
+  pointer-events: none;
+  
+  /* Add some padding at the bottom so content isn't hugging the nav */
+  padding-bottom: 40px; 
+}
+
+/* Ensure the card doesn't get cut off */
+.card {
+  margin: 20px auto;
+  max-width: 90%;
+  /* Remove any fixed heights on the card if you have them */
+}
+
+/* 2. Page Positions */
+.page.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
+}
+
+/* Position the Profile page to the left when inactive */
+#profilePage:not(.active) {
+  transform: translateX(-100%);
+}
+
+/* Position the Rate page to the right when inactive */
+#ratePage:not(.active) {
+  transform: translateX(100%);
+}
+
+.card {
+  background: #1a1a1f;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.photo-upload {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.photo-preview {
+  width: 180px;
+  height: 180px;
+  border-radius: 14px;
+  background: #2a2a32;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  color: #888;
+  text-align: center;
+}
+
+.photo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.primary-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 16px;
+  border: none;
+  border-radius: 14px;
+  background: #2a2a32;
+  color: #777;
+  font-size: 16px;
+  cursor: not-allowed;
+  transition:
+    background 0.15s ease,
+    transform 0.08s ease,
+    box-shadow 0.15s ease;
+}
+@keyframes submitFlash {
+  0%   { background: #6c63ff; }
+  50%  { background: #8b84ff; }
+  100% { background: #6c63ff; }
+}
+
+.primary-btn.submitted {
+  animation: submitFlash 0.25s ease;
+}
+
+/* Progress Bar */
+.progress-container {
+  width: 100%;
+  height: 8px;
+  background: #eee;
+  border-radius: 10px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+#average-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  z-index: 100;
+  pointer-events: none;
+  font-size: 5rem;
+  font-weight: 900;
+  text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  text-align: center;
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#average-overlay.active {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.avg-label {
+  display: block;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+}
+.progress-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #6c63ff, #ff63b1);
+  transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 0 10px rgba(108, 99, 255, 0.5);
+}
+.progress-container:has(.progress-fill) {
+    box-shadow: 0 0 15px rgba(108, 99, 255, 0.1);
+}
+/* 1. Target the container, not just the image */
+.rate-photo {
+  position: relative;
+  perspective: 1000px;
+  /* Smooth out the group movement */
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+}
+
+/* 2. The Group Exit (Photo + Stamp) */
+.rate-photo.exit {
+  opacity: 0;
+  filter: blur(2px);
+  transform: translateX(120%) rotate(15deg);
+}
+
+/* 3. The Group Entrance */
+.rate-photo.enter {
+  opacity: 0;
+  transform: scale(0.9) translateY(30px);
+}
+
+/* Ensure the image itself fills the container correctly */
+.rate-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px; /* Match your card style */
+}
+
+.rate-photo img {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+}
+
+
+
+/* Particle effect class */
+.particle {
+  position: fixed;
+  pointer-events: none;
+  border-radius: 50%;
+  animation: explode 0.6s ease-out forwards;
+}
+
+@keyframes explode {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+/* Armed = ready to submit */
+.primary-btn.armed {
+  background: #6c63ff;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(108, 99, 255, 0.35);
+}
+
+/* Press feedback */
+.primary-btn.armed:active {
+  transform: scale(0.96);
+  box-shadow: 0 6px 16px rgba(108, 99, 255, 0.25);
+}
+
+
+.primary-btn:disabled {
+  cursor: not-allowed;
+}
+
+.hint {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+}
+
+.rate-photo {
+  width: 100%;
+  height: 260px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #2a2a32;
+}
+
+.rate-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rating {
+  margin-top: 16px;
+}
+
+.rating-value {
+  text-align: center;
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+input[type="text"] {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background: #2a2a32;
+  color: white;
+}
+
+.counter {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 13px;
+  color: #aaa;
+}
+.card h2 {
+  text-align: center;
+}
+.tab.locked {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.link-btn {
+  margin-top: 14px;
+  background: none;
+  border: none;
+  color: #6c63ff;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal.hidden {
+  display: none;
+}
+.rating-scale {
+  position: relative; /* Crucial for the triangle position */
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 8px;
+  margin-top: 30px; /* Extra space for the triangle above */
+}
+
+/* The Red Triangle */
+.selection-indicator {
+  position: absolute;
+  /* Start at the bottom baseline where the buttons sit */
+  bottom: 10px; 
+  left: 0;
+  width: 16px;
+  height: 10px;
+  background-color: #ff3d00;
+  clip-path: polygon(100% 0, 0 0, 50% 100%);
+  
+  /* Bouncy movement */
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+  opacity: 0; /* Hidden until first click */
+}
+
+.selection-indicator.active {
+  opacity: 1;
+}
+/* 1. The Container (Crucial for the "Bar Graph" look) */
+.rating-container {
+  display: flex;
+  align-items: flex-end; /* This makes the growth feel impactful */
+  gap: 8px;
+  padding: 40px 20px;
+  background: #1a1a1e; /* Dark background to make colors pop */
+}
+
+/* 2. Unified Base Style */
+.rating-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.05); /* Subtle rim light */
+  border-radius: 50px;
+  cursor: pointer;
+  background: #2a2a32;
+  color: #888;
+  font-weight: 600;
+  /* Smoother transition with a soft 'bounce' */
+  transition: 
+    transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    background 0.3s ease,
+    box-shadow 0.3s ease,
+    color 0.3s ease;
+}
+
+/* 3. Hover & Selection States */
+.rating-btn:hover {
+  background: #3a3a42;
+  color: #fff;
+  transform: translateY(-5px);
+}
+
+.rating-btn.selected {
+  transform: translateY(-10px) scale(1.12);
+  color: #fff;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,0.25),
+      rgba(0,0,0,0.2)
+    ),
+    var(--btn-color);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.35),
+    0 14px 30px rgba(0,0,0,0.45),
+    0 0 22px var(--btn-color);
+}
+.rating-btn:active {
+  transform: translateY(-6px) scale(1.05);
+  filter: brightness(1.15);
+}
+
+
+/* 4. The Satisfying Progression (Sizes & Colors) */
+/* We keep your logic: every step gets slightly bigger and brighter */
+
+.rating-btn[data-value="1"] { width: 34px; height: 44px; font-size: 12px; }
+.rating-btn.selected[data-value="1"] { background: #6e7881; box-shadow: 0 10px 20px rgba(110, 129, 129, 0.4); }
+
+.rating-btn[data-value="2"] { width: 36px; height: 48px; font-size: 12px; }
+.rating-btn.selected[data-value="2"] { background: #5a8ca0; box-shadow: 0 10px 20px rgba(90, 140, 160, 0.4); }
+
+.rating-btn[data-value="3"] { width: 38px; height: 52px; font-size: 13px; }
+.rating-btn.selected[data-value="3"] { background: #4a9dbd; box-shadow: 0 10px 20px rgba(74, 157, 189, 0.4); }
+
+.rating-btn[data-value="4"] { width: 40px; height: 56px; font-size: 13px; }
+.rating-btn.selected[data-value="4"] { background: #3fa9d3; box-shadow: 0 10px 20px rgba(63, 169, 211, 0.4); }
+
+.rating-btn[data-value="5"] { width: 42px; height: 60px; font-size: 14px; }
+.rating-btn.selected[data-value="5"] { background: #6c63ff; box-shadow: 0 10px 20px rgba(108, 99, 255, 0.4); }
+
+.rating-btn[data-value="6"] { width: 44px; height: 64px; font-size: 14px; }
+.rating-btn.selected[data-value="6"] { background: #8e5ce2; box-shadow: 0 10px 20px rgba(142, 92, 226, 0.4); }
+
+.rating-btn[data-value="7"] { width: 46px; height: 68px; font-size: 15px; }
+.rating-btn.selected[data-value="7"] { background: #b056c3; box-shadow: 0 10px 20px rgba(176, 86, 195, 0.4); }
+
+.rating-btn[data-value="8"] { width: 48px; height: 72px; font-size: 15px; }
+.rating-btn.selected[data-value="8"] { background: #d351a4; box-shadow: 0 10px 20px rgba(211, 81, 164, 0.4); }
+
+.rating-btn[data-value="9"] { width: 50px; height: 78px; font-size: 16px; }
+.rating-btn.selected[data-value="9"] { background: #f54d85; box-shadow: 0 10px 20px rgba(245, 77, 133, 0.4); }
+
+/* 5. The Grand Finale (10) */
+.rating-btn[data-value="10"] {
+  width: 62px; 
+  height: 90px;
+  font-size: 18px;
+  font-weight: 800;
+  background: linear-gradient(180deg, #ff7a18, #ff3d00);
+  color: #fff;
+}
+
+.rating-btn.selected[data-value="10"] {
+  background: linear-gradient(180deg, #ffca28, #ff3d00) !important;
+  box-shadow: 0 15px 35px rgba(255, 61, 0, 0.6);
+  animation: ultraPulse 2s infinite ease-in-out;
+}
+
+@keyframes ultraPulse {
+  0% { transform: translateY(-12px) scale(1.1); filter: brightness(1); }
+  50% { transform: translateY(-15px) scale(1.15); filter: brightness(1.2); }
+  100% { transform: translateY(-12px) scale(1.1); filter: brightness(1); }
+}
+.rating-btn[data-value="1"] { --btn-color: #6e7881; }
+.rating-btn[data-value="2"] { --btn-color: #5a8ca0; }
+.rating-btn[data-value="3"] { --btn-color: #4a9dbd; }
+.rating-btn[data-value="4"] { --btn-color: #3fa9d3; }
+.rating-btn[data-value="5"] { --btn-color: #6c63ff; }
+.rating-btn[data-value="6"] { --btn-color: #8e5ce2; }
+.rating-btn[data-value="7"] { --btn-color: #b056c3; }
+.rating-btn[data-value="8"] { --btn-color: #d351a4; }
+.rating-btn[data-value="9"] { --btn-color: #f54d85; }
+.rating-btn[data-value="10"] {
+  --btn-color: #ff3d00;
+}
+
+.rate-photo {
+  position: relative;
+}
+
+#photoRatingBadge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: -1px;
+
+  color: var(--rating-color);
+  border: 4px solid var(--rating-color);
+
+  /* Subtle 3D background */
+  background: radial-gradient(
+    circle at 30% 30%, 
+    rgba(255,255,255,0.2), 
+    rgba(0,0,0,0.1)
+  );
+
+  transform: scale(0.6) rotate(-12deg);
+  opacity: 0;
+
+  /* Boost depth with shadows */
+  filter: saturate(1.2) contrast(1.1);
+  box-shadow: 
+    0 6px 15px rgba(0,0,0,0.25),    /* outer shadow */
+    inset 0 4px 8px rgba(255,255,255,0.2); /* inner highlight */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+#resultsContainer {
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(108, 99, 255, 0.05);
+  border-radius: 15px;
+  border: 2px dashed #6c63ff;
+  animation: juicyPop 0.6s ease-out;
+}
+
+.results-divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #6c63ff, transparent);
+  margin-bottom: 20px;
+}
+.rate-photo img.loading {
+  opacity: 0;
+}
+/* Container for the tags */
+.impressions-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* Individual Tag Style */
+.word-tag {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  opacity: 0; /* Start hidden for animation */
+  transform: translateY(10px);
+  animation: tagPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Empty state text */
+.empty-impressions {
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+@keyframes tagPop {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.my-avg-rating {
+  font-size: 4rem;
+  font-weight: 900;
+  margin: 10px 0;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.curve-container {
+  margin: 20px 0;
+  width: 100%;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.curve-title {
+  font-size: 0.8rem;
+  color: #888;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.graph-wrapper {
+  position: relative;
+  height: 80px; /* Adjust height as needed */
+  width: 100%;
+}
+
+.bell-curve {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* The Marker that moves */
+.marker {
+  position: absolute;
+  bottom: 0;
+  left: 0%; /* JS will change this */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateX(-50%); /* Centers the pin on the specific % */
+  transition: left 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.marker-dot {
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255,255,255,0.8);
+  margin-bottom: 2px;
+}
+
+.marker-line {
+  width: 2px;
+  height: 45px; /* Height of the line dropping down */
+  background: linear-gradient(to bottom, #fff, transparent);
+}
+
+.marker-label {
+  position: absolute;
+  top: -20px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #fff;
+  background: #333;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.axis-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.7rem;
+  color: #666;
+  margin-top: -10px; /* Pull it up a bit */
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.percentile-text {
+  font-size: 0.9rem;
+  color: #bbb;
+  margin-top: 5px;
+}
+.results-note {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  font-style: italic;
+}
+
+.hidden {
+  display: none !important;
+}
+#photoRatingBadge.show {
+  animation: stampPop 220ms cubic-bezier(.2,1.4,.4,1) forwards;
+}
+
+@keyframes stampPop {
+  0% {
+    transform: scale(1.8) rotate(-20deg);
+    opacity: 0;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3),
+                inset 0 6px 12px rgba(255,255,255,0.25);
+  }
+  60% {
+    transform: scale(0.95) rotate(-12deg);
+    opacity: 1;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.25),
+                inset 0 4px 8px rgba(255,255,255,0.2);
+  }
+  100% {
+    transform: scale(1) rotate(-12deg);
+    opacity: 1;
+  }
+}
+
+#photoRatingBadge::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 2px dashed var(--rating-color);
+  opacity: 0.25;
+
+  /* Slight rotation for “hand-stamped” feel */
+  transform: rotate(-2deg);
+}
+
+#photoRatingBadge span {
+  transform: translateY(2px) translateX(-1px);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* lift text slightly */
+}
+
+
+
+
+
+.modal-content {
+  background: #1a1a1f;
+  border-radius: 16px;
+  padding: 20px;
+  width: 90%;
+  max-width: 380px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-content h2 {
+  text-align: center;
+  margin-top: 0;
+}
+
+.modal-text p {
+  font-size: 13px;
+  color: #ccc;
+  line-height: 1.5;
+}
+
+nav {
+  display: flex;
+  border-top: 1px solid #222;
+  background: #121216;
+}
+
+.tab {
+  flex: 1;
+  padding: 14px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.tab.active {
+  color: white;
+}
