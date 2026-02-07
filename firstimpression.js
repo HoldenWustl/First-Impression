@@ -287,6 +287,12 @@ let isSubmitting = false; // The Gatekeeper
 const rateImage = document.getElementById("rateImage");
 const oneWordInput = document.getElementById("oneWordInput");
 const submitRatingBtn = document.getElementById("submitRatingBtn");
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
 
 async function loadPhotosToRate() {
   const userPhoto = localStorage.getItem(USER_PHOTO_URL_KEY);
@@ -303,6 +309,7 @@ async function loadPhotosToRate() {
       .map(doc => ({ id: doc.id, ...doc.data() }))
       .filter(photo => photo.photoURL !== userPhoto);
 
+    shuffleArray(photosToRate);
     console.log("Filtered photos available to rate:", photosToRate.length);
 
     if (photosToRate.length > 0) {
@@ -433,49 +440,70 @@ submitRatingBtn.onclick = async (e) => {
   const currentPhoto = photosToRate[currentPhotoIndex];
   const ratingValue = Number(selectedRating);
   const color = getComputedStyle(photoRatingBadge).getPropertyValue("--rating-color");
+  const userWord = oneWordInput.value.trim(); 
 
   createParticles(e.clientX, e.clientY, color);
   submitRatingBtn.classList.add("submitted");
 
   try {
-    // Save rating
-    await addDoc(collection(db, "ratings"), {
-      photoId: currentPhoto.id,
-      rating: ratingValue,
-      word: oneWordInput.value.trim(),
-      timestamp: serverTimestamp()
-    });
-
-    // Update average
     const photoRef = doc(db, "photos", currentPhoto.id);
-    const newAverage = await runTransaction(db, async (transaction) => {
-      const photoDoc = await transaction.get(photoRef);
-      if (!photoDoc.exists()) throw "Photo does not exist!";
+    
+    const [newAverage, recentRatingsSnap, _] = await Promise.all([
+      // Task A: Transaction
+      runTransaction(db, async (transaction) => {
+        const photoDoc = await transaction.get(photoRef);
+        if (!photoDoc.exists()) throw "Photo does not exist!";
+        const data = photoDoc.data();
+        const currentAvg = data.averageRating || 0;
+        const currentCount = data.ratingsCount || 0;
+        const newCount = currentCount + 1;
+        const calculatedAvg = ((currentAvg * currentCount) + ratingValue) / newCount;
+        transaction.update(photoRef, { averageRating: calculatedAvg, ratingsCount: newCount });
+        return calculatedAvg;
+      }),
 
-      const data = photoDoc.data();
-      const currentAvg = data.averageRating || 0;
-      const currentCount = data.ratingsCount || 0;
-      const newCount = currentCount + 1;
-      const calculatedAvg = ((currentAvg * currentCount) + ratingValue) / newCount;
+      // Task B: Fetch recent ratings (Fetch 10, filter in JS to avoid Index errors)
+      getDocs(query(
+        collection(db, "ratings"),
+        where("photoId", "==", currentPhoto.id),
+        orderBy("timestamp", "desc"),
+        limit(10) 
+      )),
 
-      transaction.update(photoRef, {
-        averageRating: calculatedAvg,
-        ratingsCount: newCount
-      });
+      // Task C: Save new rating
+      addDoc(collection(db, "ratings"), {
+        photoId: currentPhoto.id,
+        rating: ratingValue,
+        word: userWord,
+        timestamp: serverTimestamp()
+      })
+    ]);
 
-      return calculatedAvg;
+    // --- 3. Process Words (Logic Update) ---
+    let displayWords = [];
+    
+    // 1. Add current user word first
+    if(userWord) displayWords.push(userWord);
+
+    // 2. Add words from DB (Filter duplicates & empty strings)
+    recentRatingsSnap.forEach(doc => {
+        const w = doc.data().word;
+        // Check if word exists, isn't empty, and isn't a duplicate
+        if(w && w.trim().length > 0 && !displayWords.includes(w)) {
+            displayWords.push(w);
+        }
     });
 
-    await showAveragePop(newAverage, color);
+    // 3. STRICT LIMIT: Ensure we never send more than 3
+    displayWords = displayWords.slice(0, 3);
 
-    // Advance index
+    // 4. Animate
+    await showAveragePop(newAverage, color, displayWords);
+
+    // --- (Rest of logic) ---
     currentPhotoIndex = (currentPhotoIndex + 1) % photosToRate.length;
-    const nextPhoto = photosToRate[currentPhotoIndex];
+    await renderPhoto(photosToRate[currentPhotoIndex]);
 
-    // Render next photo smoothly
-    await renderPhoto(nextPhoto);
-
-    // Update UI after photo fully loaded
     ratedCount++;
     localStorage.setItem(RATED_COUNT_KEY, ratedCount);
     ratedCountEl.textContent = ratedCount;
@@ -483,7 +511,6 @@ submitRatingBtn.onclick = async (e) => {
     const progressPercent = Math.min((ratedCount / 10) * 100, 100);
     progressFill.style.width = `${progressPercent}%`;
 
-    // Reset UI
     photoRatingBadge.classList.remove("show", "pop-in");
     oneWordInput.value = "";
     selectedRating = null;
@@ -495,43 +522,62 @@ submitRatingBtn.onclick = async (e) => {
   } finally {
     isSubmitting = false;
     submitRatingBtn.disabled = false;
-    navigator.vibrate?.(10); // keep the juicy vibration
+    if(navigator.vibrate) navigator.vibrate(10);
   }
 };
 
-
 // Helper for the "Juicy" Count-up
-function showAveragePop(avg, color) {
+function showAveragePop(avg, color, words = []) {
   return new Promise((resolve) => {
-    const displayAvg = avg.toFixed(1);
-    const overlay = document.getElementById("average-overlay"); // Create this in HTML
+    const overlay = document.getElementById("average-overlay");
     const textEl = overlay.querySelector(".avg-number");
+    const wordsContainer = document.getElementById("avg-words-container"); 
+    
+    // Clear previous words
+    wordsContainer.innerHTML = "";
     
     overlay.style.color = color;
     overlay.classList.add("active");
 
-    // Animate number count-up
-    let start = 0;
-    const duration = 600; 
+    // 1. Number Animation (Standard)
     const startTime = performance.now();
+    const duration = 600; 
 
     function updateNumber(now) {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const current = progress * avg;
-      
-      textEl.textContent = current.toFixed(1);
-
-      if (progress < 1) {
-        requestAnimationFrame(updateNumber);
-      } else {
-        setTimeout(() => {
-          overlay.classList.remove("active");
-          resolve();
-        }, 800); // Hold the average on screen for a moment
-      }
+      textEl.textContent = (progress * avg).toFixed(1);
+      if (progress < 1) requestAnimationFrame(updateNumber);
     }
     requestAnimationFrame(updateNumber);
+
+    // 2. Words Animation (Staggered)
+    if(words.length > 0) {
+        setTimeout(() => {
+            words.forEach((word, index) => {
+                const pill = document.createElement("div");
+                pill.className = "avg-word-pill";
+                pill.textContent = word;
+                // Add a border matching the rating color
+                pill.style.border = `2px solid ${color}`;
+                pill.style.animationDelay = `${index * 150}ms`;
+                
+                wordsContainer.appendChild(pill);
+                
+                // Force Reflow
+                void pill.offsetWidth;
+                pill.classList.add("pop");
+            });
+        }, 200);
+    }
+
+    // 3. Cleanup
+    setTimeout(() => {
+      overlay.classList.remove("active");
+      // Fade out words manually or just clear innerHTML
+      wordsContainer.innerHTML = ""; 
+      resolve();
+    }, 2000); // 2 seconds total display time
   });
 }
 
