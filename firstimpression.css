@@ -497,37 +497,65 @@ input[type="text"] {
   transform: translateY(-6px) scale(1.05);
   filter: brightness(1.15);
 }
+/* 1. The Rock Bottom (1) */
+.rating-btn[data-value="1"] {
+  width: 34px; 
+  height: 44px; 
+  font-size: 12px;
+  font-weight: 800;
+  background: linear-gradient(180deg, #2a2a32, #1a1a1a);
+  color: #fff;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.05);
+}
 
+.rating-btn.selected[data-value="1"] {
+  background: #1a1a1a !important; /* Deep "void" black */
+  color: #ff4d4d; /* Warning red text */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(255, 0, 0, 0.2);
+  animation: heavyShudder 0.6s infinite ease-in-out;
+  border-color: #ff4d4d;
+}
+
+/* Shudder animation: feels unstable and heavy */
+@keyframes heavyShudder {
+  0% { transform: translateY(2px) translateX(0); }
+  25% { transform: translateY(3px) translateX(-1px); }
+  50% { transform: translateY(2px) translateX(1px); }
+  75% { transform: translateY(3px) translateX(-1px); }
+  100% { transform: translateY(2px) translateX(0); }
+}
 
 /* 4. The Satisfying Progression (Sizes & Colors) */
 /* We keep your logic: every step gets slightly bigger and brighter */
 
-.rating-btn[data-value="1"] { width: 34px; height: 44px; font-size: 12px; }
-.rating-btn.selected[data-value="1"] { background: #6e7881; box-shadow: 0 10px 20px rgba(110, 129, 129, 0.4); }
 
-.rating-btn[data-value="2"] { width: 36px; height: 48px; font-size: 12px; }
-.rating-btn.selected[data-value="2"] { background: #5a8ca0; box-shadow: 0 10px 20px rgba(90, 140, 160, 0.4); }
+/* 2-3: The "Meh" Zone (Cold & Heavy) */
+.rating-btn[data-value="2"] { width: 36px; height: 48px; font-size: 12px; --btn-color: #37474f; }
+.rating-btn.selected[data-value="2"] { background: #37474f; box-shadow: 0 10px 20px rgba(55, 71, 79, 0.4); }
 
-.rating-btn[data-value="3"] { width: 38px; height: 52px; font-size: 13px; }
-.rating-btn.selected[data-value="3"] { background: #4a9dbd; box-shadow: 0 10px 20px rgba(74, 157, 189, 0.4); }
+.rating-btn[data-value="3"] { width: 38px; height: 52px; font-size: 13px; --btn-color: #455a64; }
+.rating-btn.selected[data-value="3"] { background: #455a64; box-shadow: 0 10px 20px rgba(69, 90, 100, 0.4); }
 
-.rating-btn[data-value="4"] { width: 40px; height: 56px; font-size: 13px; }
-.rating-btn.selected[data-value="4"] { background: #3fa9d3; box-shadow: 0 10px 20px rgba(63, 169, 211, 0.4); }
+/* 4-5: Getting Better (Stable & Neutral) */
+.rating-btn[data-value="4"] { width: 40px; height: 56px; font-size: 13px; --btn-color: #00695c; }
+.rating-btn.selected[data-value="4"] { background: #00695c; box-shadow: 0 10px 20px rgba(0, 105, 92, 0.4); }
 
-.rating-btn[data-value="5"] { width: 42px; height: 60px; font-size: 14px; }
-.rating-btn.selected[data-value="5"] { background: #6c63ff; box-shadow: 0 10px 20px rgba(108, 99, 255, 0.4); }
+.rating-btn[data-value="5"] { width: 42px; height: 60px; font-size: 14px; --btn-color: #3949ab; }
+.rating-btn.selected[data-value="5"] { background: #3949ab; box-shadow: 0 10px 20px rgba(57, 73, 171, 0.4); }
 
-.rating-btn[data-value="6"] { width: 44px; height: 64px; font-size: 14px; }
-.rating-btn.selected[data-value="6"] { background: #8e5ce2; box-shadow: 0 10px 20px rgba(142, 92, 226, 0.4); }
+/* 6-7: Creative Spark (Vibrant & Energetic) */
+.rating-btn[data-value="6"] { width: 44px; height: 64px; font-size: 14px; --btn-color: #8e24aa; }
+.rating-btn.selected[data-value="6"] { background: #8e24aa; box-shadow: 0 10px 20px rgba(142, 36, 170, 0.4); }
 
-.rating-btn[data-value="7"] { width: 46px; height: 68px; font-size: 15px; }
-.rating-btn.selected[data-value="7"] { background: #b056c3; box-shadow: 0 10px 20px rgba(176, 86, 195, 0.4); }
+.rating-btn[data-value="7"] { width: 46px; height: 68px; font-size: 15px; --btn-color: #d81b60; }
+.rating-btn.selected[data-value="7"] { background: #d81b60; box-shadow: 0 10px 20px rgba(216, 27, 96, 0.4); }
 
-.rating-btn[data-value="8"] { width: 48px; height: 72px; font-size: 15px; }
-.rating-btn.selected[data-value="8"] { background: #d351a4; box-shadow: 0 10px 20px rgba(211, 81, 164, 0.4); }
+/* 8-9: Almost Perfect (Heating Up) */
+.rating-btn[data-value="8"] { width: 48px; height: 72px; font-size: 15px; --btn-color: #e64a19; }
+.rating-btn.selected[data-value="8"] { background: #e64a19; box-shadow: 0 10px 20px rgba(230, 74, 25, 0.4); }
 
-.rating-btn[data-value="9"] { width: 50px; height: 78px; font-size: 16px; }
-.rating-btn.selected[data-value="9"] { background: #f54d85; box-shadow: 0 10px 20px rgba(245, 77, 133, 0.4); }
+.rating-btn[data-value="9"] { width: 50px; height: 78px; font-size: 16px; --btn-color: #fb8c00; }
+.rating-btn.selected[data-value="9"] { background: #fb8c00; box-shadow: 0 10px 20px rgba(251, 140, 0, 0.4); }
 
 /* 5. The Grand Finale (10) */
 .rating-btn[data-value="10"] {
@@ -550,18 +578,8 @@ input[type="text"] {
   50% { transform: translateY(-15px) scale(1.15); filter: brightness(1.2); }
   100% { transform: translateY(-12px) scale(1.1); filter: brightness(1); }
 }
-.rating-btn[data-value="1"] { --btn-color: #6e7881; }
-.rating-btn[data-value="2"] { --btn-color: #5a8ca0; }
-.rating-btn[data-value="3"] { --btn-color: #4a9dbd; }
-.rating-btn[data-value="4"] { --btn-color: #3fa9d3; }
-.rating-btn[data-value="5"] { --btn-color: #6c63ff; }
-.rating-btn[data-value="6"] { --btn-color: #8e5ce2; }
-.rating-btn[data-value="7"] { --btn-color: #b056c3; }
-.rating-btn[data-value="8"] { --btn-color: #d351a4; }
-.rating-btn[data-value="9"] { --btn-color: #f54d85; }
-.rating-btn[data-value="10"] {
-  --btn-color: #ff3d00;
-}
+.rating-btn[data-value="1"] { --btn-color: #1a1a1a; }
+.rating-btn[data-value="10"] {--btn-color: #ff7a18;}
 
 .rate-photo {
   position: relative;
@@ -836,4 +854,3 @@ nav {
 .tab.active {
   color: white;
 }
-
