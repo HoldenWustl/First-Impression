@@ -578,7 +578,7 @@ input[type="text"] {
   50% { transform: translateY(-15px) scale(1.15); filter: brightness(1.2); }
   100% { transform: translateY(-12px) scale(1.1); filter: brightness(1); }
 }
-.rating-btn[data-value="1"] { --btn-color: #1a1a1a; }
+.rating-btn[data-value="1"] { --btn-color: #2c2c2c; }
 .rating-btn[data-value="10"] {--btn-color: #ff7a18;}
 
 .rate-photo {
