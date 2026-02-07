@@ -347,6 +347,8 @@ async function renderPhoto(photoObj) {
 
       setTimeout(() => {
         ratePhotoContainer.classList.remove("enter");
+        ratePhotoContainer.style.borderColor = "";
+        ratePhotoContainer.style.boxShadow = "";
         resolve(); // tell the caller the photo is fully in
       }, 150);
 
@@ -373,6 +375,7 @@ tabRate.onclick = () => {
 let selectedRating = null;
 const photoRatingBadge = document.getElementById("photoRatingBadge");
 const ratingButtons = document.querySelectorAll(".rating-btn");
+const photoContainer = document.querySelector('.rate-photo');
 
 ratingButtons.forEach(button => {
   button.addEventListener("click", () => {
@@ -389,7 +392,8 @@ ratingButtons.forEach(button => {
     // Pull color from button CSS variable
     const color = getComputedStyle(button).getPropertyValue("--btn-color");
     photoRatingBadge.style.setProperty("--rating-color", color);
-
+    photoContainer.style.borderColor = color;
+    photoContainer.style.boxShadow = `0 0 25px ${color}66`;
     // 🔥 Re-trigger pop animation
     photoRatingBadge.classList.remove("show");
     void photoRatingBadge.offsetWidth; // force reflow
@@ -633,3 +637,4 @@ if (container && indicator) {
       });
     });
 }
+
