@@ -259,8 +259,17 @@ main {
 .rate-photo {
   position: relative;
   perspective: 1000px;
-  /* Smooth out the group movement */
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+  
+  /* 1. Add a placeholder border so the layout doesn't jump */
+  border: 4px solid transparent; 
+  border-radius: 12px; /* Optional: keeps corners clean */
+
+  /* 2. Merge your existing transitions with the new ones */
+  transition: 
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+    opacity 0.3s,
+    border-color 0.3s ease, 
+    box-shadow 0.3s ease;
 }
 
 /* 2. The Group Exit (Photo + Stamp) */
@@ -827,3 +836,4 @@ nav {
 .tab.active {
   color: white;
 }
+
