@@ -386,8 +386,8 @@ ratingButtons.forEach(button => {
     if (!isSubmitting) {
     // Update badge text
     photoRatingBadge.textContent = selectedRating;
-    const rotation = -8 + Math.random() * 6;
-    photoRatingBadge.style.transform = `rotate(${rotation}deg)`;
+    const rotation = -15 + Math.random() * 30;
+photoRatingBadge.style.setProperty("--badge-rotation", `${rotation}deg`);
 
     // Pull color from button CSS variable
     const color = getComputedStyle(button).getPropertyValue("--btn-color");
@@ -637,4 +637,5 @@ if (container && indicator) {
       });
     });
 }
+
 
