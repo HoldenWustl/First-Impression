@@ -776,19 +776,15 @@ input[type="text"] {
 
 @keyframes stampPop {
   0% {
-    transform: scale(1.8) rotate(-20deg);
+    transform: scale(1.8) rotate(calc(var(--badge-rotation) - 10deg));
     opacity: 0;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3),
-                inset 0 6px 12px rgba(255,255,255,0.25);
   }
   60% {
-    transform: scale(0.95) rotate(-12deg);
+    transform: scale(0.95) rotate(calc(var(--badge-rotation) + 3deg));
     opacity: 1;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.25),
-                inset 0 4px 8px rgba(255,255,255,0.2);
   }
   100% {
-    transform: scale(1) rotate(-12deg);
+    transform: scale(1) rotate(var(--badge-rotation));
     opacity: 1;
   }
 }
@@ -854,3 +850,4 @@ nav {
 .tab.active {
   color: white;
 }
+
