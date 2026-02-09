@@ -161,10 +161,39 @@ function setPhotoPreview(url) {
   img.style.width = "100%";
   img.style.height = "100%";
   img.style.objectFit = "cover";
-  
+
   photoPreview.innerHTML = "";
   photoPreview.appendChild(img);
+
+  // JUICE 💦
+  triggerUploadEffect();
 }
+function triggerUploadEffect() {
+  photoPreview.classList.remove("pop", "ripple");
+
+  // Force reflow so animation retriggers
+  void photoPreview.offsetWidth;
+
+  photoPreview.classList.add("pop", "ripple");
+
+  // Sparkles
+  for (let i = 0; i < 10; i++) {
+    const s = document.createElement("div");
+    s.className = "sparkle";
+
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 40 + Math.random() * 30;
+
+    s.style.left = "50%";
+    s.style.top = "50%";
+    s.style.setProperty("--x", `${Math.cos(angle) * distance}px`);
+    s.style.setProperty("--y", `${Math.sin(angle) * distance}px`);
+
+    photoPreview.appendChild(s);
+    setTimeout(() => s.remove(), 700);
+  }
+}
+
 async function fetchMyResults() {
   const photoId = localStorage.getItem(USER_PHOTO_ID_KEY);
   if (!photoId) return;
