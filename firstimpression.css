@@ -259,17 +259,52 @@ main {
 .rate-photo {
   position: relative;
   perspective: 1000px;
+  border-radius: 12px;
+  overflow: hidden; /* Clips the animation to the corners */
+  padding: 4px;    /* Space for the "border" */
+  background: #222; /* Your container background */
   
-  /* 1. Add a placeholder border so the layout doesn't jump */
-  border: 4px solid transparent; 
-  border-radius: 12px; /* Optional: keeps corners clean */
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+}
 
-  /* 2. Merge your existing transitions with the new ones */
-  transition: 
-    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
-    opacity 0.3s,
-    border-color 0.3s ease, 
-    box-shadow 0.3s ease;
+/* The Animated "Border" Layer */
+.rate-photo::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  /* We use a CSS variable --accent-color that JS will update */
+  background: conic-gradient(
+    transparent, 
+    var(--accent-color, #fff) 10%, 
+    transparent 20%
+  );
+  animation: rotate 3s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+/* Show the beam only when active */
+.rate-photo.is-active::before {
+  opacity: 1;
+}
+
+/* The inner "mask" to make it look like a border */
+.rate-photo::after {
+  content: '';
+  position: absolute;
+  inset: 4px; /* Matches the "border width" */
+  background: inherit;
+  border-radius: 8px;
+  z-index: -1;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* 2. The Group Exit (Photo + Stamp) */
@@ -589,9 +624,8 @@ input[type="text"] {
   position: absolute;
   top: 14px;
   right: 14px;
-
-  width: 70px;
-  height: 70px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
 
   display: flex;
@@ -600,27 +634,34 @@ input[type="text"] {
 
   font-size: 32px;
   font-weight: 900;
-  letter-spacing: -1px;
+  letter-spacing: -1.5px;
+  
+  /* 1. Glass Effect: Blur the background behind the badge */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  
+  /* 2. Colors: Use a semi-transparent background so the light passes through */
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+  color: #fff; /* White text usually looks more "premium" on colored glass */
+  
+  /* 3. The "Rim" Light: Instead of a thick border, use a thin, bright top edge */
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  
+  /* 4. Layered Depth: 
+     - A sharp shadow for lift 
+     - A colored glow for 'juice' 
+     - An inner highlight for thickness */
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),            /* Grounding shadow */
+    inset 0 0 0 2px var(--rating-color),      /* Inner colored ring */
+    0 0 20px var(--rating-color);             /* Outer glow */
 
-  color: var(--rating-color);
-  border: 4px solid var(--rating-color);
-
-  /* Subtle 3D background */
-  background: radial-gradient(
-    circle at 30% 30%, 
-    rgba(255,255,255,0.2), 
-    rgba(0,0,0,0.1)
-  );
-
+  /* 5. Natural Tilt */
   transform: scale(0.6) rotate(-12deg);
   opacity: 0;
-
-  /* Boost depth with shadows */
-  filter: saturate(1.2) contrast(1.1);
-  box-shadow: 
-    0 6px 15px rgba(0,0,0,0.25),    /* outer shadow */
-    inset 0 4px 8px rgba(255,255,255,0.2); /* inner highlight */
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 #resultsContainer {
   margin-top: 20px;
@@ -789,6 +830,7 @@ input[type="text"] {
   }
 }
 
+
 #photoRatingBadge::after {
   content: "";
   position: absolute;
@@ -850,4 +892,3 @@ nav {
 .tab.active {
   color: white;
 }
-
