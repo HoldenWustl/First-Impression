@@ -344,11 +344,11 @@ async function renderPhoto(photoObj) {
       // 4. Animate new photo in
       ratePhotoContainer.classList.remove("exit");
       ratePhotoContainer.classList.add("enter");
-
+      
       setTimeout(() => {
         ratePhotoContainer.classList.remove("enter");
-        ratePhotoContainer.style.borderColor = "";
-        ratePhotoContainer.style.boxShadow = "";
+        photoContainer.classList.remove('is-active');
+photoContainer.style.boxShadow = "";
         resolve(); // tell the caller the photo is fully in
       }, 150);
 
@@ -386,14 +386,16 @@ ratingButtons.forEach(button => {
     if (!isSubmitting) {
     // Update badge text
     photoRatingBadge.textContent = selectedRating;
-    const rotation = -15 + Math.random() * 30;
+   const rotation = -15 + Math.random() * 30;
 photoRatingBadge.style.setProperty("--badge-rotation", `${rotation}deg`);
+
 
     // Pull color from button CSS variable
     const color = getComputedStyle(button).getPropertyValue("--btn-color");
     photoRatingBadge.style.setProperty("--rating-color", color);
-    photoContainer.style.borderColor = color;
-    photoContainer.style.boxShadow = `0 0 25px ${color}66`;
+    photoContainer.style.setProperty('--accent-color', color);
+photoContainer.classList.add('is-active');
+photoContainer.style.boxShadow = `0 0 25px ${color}66`;
     // 🔥 Re-trigger pop animation
     photoRatingBadge.classList.remove("show");
     void photoRatingBadge.offsetWidth; // force reflow
@@ -637,5 +639,3 @@ if (container && indicator) {
       });
     });
 }
-
-
