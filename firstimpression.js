@@ -156,17 +156,28 @@ photoInput.onchange = async () => {
 
 // --- Helper: Render the preview image ---
 function setPhotoPreview(url) {
-  const img = document.createElement("img");
+  if (!url) return;
+
+  const img = new Image();
   img.src = url;
-  img.style.width = "100%";
-  img.style.height = "100%";
-  img.style.objectFit = "cover";
+  
+  img.onload = () => {
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.style.objectFit = "cover";
+    img.style.display = "block"; // Ensure it's not hidden by default
 
-  photoPreview.innerHTML = "";
-  photoPreview.appendChild(img);
+    photoPreview.innerHTML = "";
+    photoPreview.appendChild(img);
 
-  // JUICE 💦
-  triggerUploadEffect();
+    // Only trigger animations ONCE the pixels are actually ready
+    triggerUploadEffect();
+  };
+
+  img.onerror = () => {
+    console.error("Failed to load profile photo from storage.");
+    photoPreview.innerHTML = "<span>Error loading image</span>";
+  };
 }
 function triggerUploadEffect() {
   photoPreview.classList.remove("pop", "ripple");
@@ -802,4 +813,5 @@ function resetRatingUI() {
     photoContainer.classList.remove('is-active');
     photoContainer.style.boxShadow = "";
 }
+
 
