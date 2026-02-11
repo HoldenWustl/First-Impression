@@ -378,45 +378,44 @@ async function renderPhoto(photoObj) {
   if (!photoObj) return;
 
   return new Promise(async (resolve) => {
-    // 1. Kick off the exit animation
+    // 1. START EXIT: Toss the old card away
     ratePhotoContainer.classList.add("exit");
-
-    // 2. Preload and Decode the new image in the background
+    
+    // 2. PRELOAD: Get the new image ready in the background
     const tempImg = new Image();
     tempImg.src = photoObj.photoURL;
 
     try {
-      // .decode() is the secret sauce to prevent flickering
       await tempImg.decode(); 
-      
-      // 3. Wait a tiny bit for the 'exit' transition to actually finish (matching CSS time)
-      setTimeout(() => {
-        // 4. Swap the actual image while the container is invisible (opacity 0)
-        rateImage.src = tempImg.src;
 
-        // 5. Instantly switch from 'exit' state to 'enter' state (still invisible)
+      // 3. THE FLICKER KILLER:
+      // Wait for the exit animation to be halfway done, then BLANK the old image.
+      setTimeout(() => {
+        rateImage.style.opacity = "0"; // Hide the old pixels
+        rateImage.src = tempImg.src;   // Swap the source
+      }, 150); 
+
+      // 4. PREPARE ENTRY
+      setTimeout(() => {
         ratePhotoContainer.classList.remove("exit");
         ratePhotoContainer.classList.add("enter");
 
-        // 6. Force a "reflow" so the browser recognizes the 'enter' state
+        // Force reflow
         void ratePhotoContainer.offsetWidth;
 
-        // 7. Remove 'enter' to trigger the smooth CSS transition back to normal
+        // 5. SHOW & POP: Fade image back in and trigger the entrance
+        rateImage.style.opacity = "1";
         ratePhotoContainer.classList.remove("enter");
-        
-        // Cleanup UI states
-        photoContainer.classList.remove('is-active');
-        photoContainer.style.boxShadow = "";
 
-        setTimeout(() => {
-          resolve(); 
-        }, 300); // Wait for entrance animation to finish
-      }, 200); // This matches your exit transition speed
+        // UI Cleanup
+        photoContainer.classList.remove('is-active');
+        
+        setTimeout(() => resolve(), 400); 
+      }, 250); // Match this to your CSS exit duration
 
     } catch (err) {
-      console.error("Image decode failed", err);
-      // Fallback: swap anyway if decode fails
-      rateImage.src = tempImg.src;
+      console.error("Decode failed", err);
+      rateImage.src = photoObj.photoURL;
       ratePhotoContainer.classList.remove("exit");
       resolve();
     }
