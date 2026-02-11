@@ -41,7 +41,29 @@ header {
   padding: 24px 20px 10px;
   text-align: center;
 }
+header {
+  position: relative; /* Essential for positioning the button */
+}
 
+.share-icon-btn {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: white; /* Or match your h1 color */
+  padding: 10px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.share-icon-btn:active {
+  opacity: 1;
+  transform: translateY(-50%) scale(0.9); /* Subtle feedback when tapped */
+}
 header h1 {
   margin: 0;
   font-size: 28px;
@@ -953,3 +975,4 @@ nav {
 .tab.active {
   color: white;
 }
+
