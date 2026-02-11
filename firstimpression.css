@@ -10,6 +10,19 @@ body {
   display: flex;
   justify-content: center;
 }
+main {
+  /* Prevents pull-to-refresh and horizontal bounce in some browsers */
+  touch-action: pan-y; 
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
+.page {
+  /* Ensure pages sit correctly for transitions if you add them later */
+  width: 100%;
+  transition: transform 0.3s ease-in-out;
+}
 @keyframes juicyPop {
   0% {
     transform: scale(0.95);
@@ -975,4 +988,5 @@ nav {
 .tab.active {
   color: white;
 }
+
 
