@@ -161,20 +161,26 @@ function setPhotoPreview(url) {
   const img = new Image();
   img.src = url;
   
-  img.onload = () => {
-    img.style.width = "100%";
-    img.style.height = "100%";
-    img.style.objectFit = "cover";
-    img.style.display = "block"; // Ensure it's not hidden by default
-
+ img.onload = () => {
+  // .decode() ensures the image is actually ready to be seen before we show it
+  img.decode().then(() => {
     photoPreview.innerHTML = "";
     photoPreview.appendChild(img);
 
-    // Only trigger animations ONCE the pixels are actually ready
+    // Give the mobile browser a "breather" before starting heavy animations
     requestAnimationFrame(() => {
+      setTimeout(() => {
+        triggerUploadEffect();
+      }, 50); 
+    });
+  }).catch((err) => {
+    console.error("Decoding failed", err);
+    // Fallback if decode fails
+    photoPreview.innerHTML = "";
+    photoPreview.appendChild(img);
     triggerUploadEffect();
   });
-  };
+};
 
   img.onerror = () => {
     console.error("Failed to load profile photo from storage.");
