@@ -801,21 +801,21 @@ function handleSwipe() {
     }
 }
 
-let photoStartX = 0;
+// let photoStartX = 0;
 
-ratePhotoContainer.addEventListener('touchstart', (e) => {
-    // This stops the "Tab Swipe" from firing when touching the photo
-    e.stopPropagation(); 
-    photoStartX = e.touches[0].clientX;
-}, { passive: true });
+// ratePhotoContainer.addEventListener('touchstart', (e) => {
+//     // This stops the "Tab Swipe" from firing when touching the photo
+//     e.stopPropagation(); 
+//     photoStartX = e.touches[0].clientX;
+// }, { passive: true });
 
-ratePhotoContainer.addEventListener('touchend', (e) => {
-    e.stopPropagation();
-    const photoEndX = e.changedTouches[0].clientX;
-    const diff = photoEndX - photoStartX;
+// ratePhotoContainer.addEventListener('touchend', (e) => {
+//     e.stopPropagation();
+//     const photoEndX = e.changedTouches[0].clientX;
+//     const diff = photoEndX - photoStartX;
 
-    // Threshold of 100px to skip
-    if (Math.abs(diff) > 100) {
-        skipPhoto();
-    }
-}, { passive: true });
+//     // Threshold of 100px to skip
+//     if (Math.abs(diff) > 100) {
+//         skipPhoto();
+//     }
+// }, { passive: true });
