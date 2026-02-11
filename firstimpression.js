@@ -723,6 +723,7 @@ function handleSwipe() {
                 tabProfile.classList.add("shake-animation");
                 setTimeout(() => tabProfile.classList.remove("shake-animation"), 500);
             } else {
+              if (photosToRate.length === 0) loadPhotosToRate();
                 switchTab("rate");
             }
         }
@@ -735,3 +736,4 @@ function handleSwipe() {
         }
     }
 }
+
