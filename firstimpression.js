@@ -171,7 +171,9 @@ function setPhotoPreview(url) {
     photoPreview.appendChild(img);
 
     // Only trigger animations ONCE the pixels are actually ready
+    requestAnimationFrame(() => {
     triggerUploadEffect();
+  });
   };
 
   img.onerror = () => {
@@ -417,6 +419,34 @@ async function renderPhoto(photoObj) {
 
 
 
+async function skipPhoto() {
+    if (isSubmitting || photosToRate.length === 0) return;
+    
+    // 1. Move to next index
+    currentPhotoIndex = (currentPhotoIndex + 1) % photosToRate.length;
+    
+    // 2. Visual feedback: Add a "slide" class before rendering
+    ratePhotoContainer.classList.add("swipe-skip");
+    
+    // 3. Render the next photo (using your existing function)
+    await renderPhoto(photosToRate[currentPhotoIndex]);
+    
+    // 4. Reset all the UI elements
+    resetRatingUI();
+    
+    // 5. Clean up animation class
+    ratePhotoContainer.classList.remove("swipe-skip");
+}
+function resetRatingUI() {
+    photoRatingBadge.classList.remove("show", "pop-in");
+    photoRatingBadge.classList.add("hidden"); // Hide the badge
+    oneWordInput.value = "";
+    selectedRating = null;
+    ratingButtons.forEach(b => b.classList.remove("selected"));
+    submitRatingBtn.classList.remove("armed", "submitted");
+    photoContainer.classList.remove('is-active');
+    photoContainer.style.boxShadow = "";
+}
 // Update your submit logic to use these:
 function displayNextPhoto() {
   currentPhotoIndex = (currentPhotoIndex + 1) % photosToRate.length;
@@ -698,7 +728,7 @@ if (container && indicator) {
     });
 }
 
-// Share Button
+//Share Button
 const shareBtn = document.getElementById('shareAppBtn');
 
 shareBtn.addEventListener('click', async () => {
@@ -784,34 +814,3 @@ ratePhotoContainer.addEventListener('touchend', (e) => {
         skipPhoto();
     }
 }, { passive: true });
-
-async function skipPhoto() {
-    if (isSubmitting || photosToRate.length === 0) return;
-    
-    // 1. Move to next index
-    currentPhotoIndex = (currentPhotoIndex + 1) % photosToRate.length;
-    
-    // 2. Visual feedback: Add a "slide" class before rendering
-    ratePhotoContainer.classList.add("swipe-skip");
-    
-    // 3. Render the next photo (using your existing function)
-    await renderPhoto(photosToRate[currentPhotoIndex]);
-    
-    // 4. Reset all the UI elements
-    resetRatingUI();
-    
-    // 5. Clean up animation class
-    ratePhotoContainer.classList.remove("swipe-skip");
-}
-function resetRatingUI() {
-    photoRatingBadge.classList.remove("show", "pop-in");
-    photoRatingBadge.classList.add("hidden"); // Hide the badge
-    oneWordInput.value = "";
-    selectedRating = null;
-    ratingButtons.forEach(b => b.classList.remove("selected"));
-    submitRatingBtn.classList.remove("armed", "submitted");
-    photoContainer.classList.remove('is-active');
-    photoContainer.style.boxShadow = "";
-}
-
-
