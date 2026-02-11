@@ -358,31 +358,49 @@ async function loadPhotosToRate() {
 async function renderPhoto(photoObj) {
   if (!photoObj) return;
 
-  return new Promise((resolve) => {
-    // 1. Animate old photo out
+  return new Promise(async (resolve) => {
+    // 1. Kick off the exit animation
     ratePhotoContainer.classList.add("exit");
 
-    // 2. Preload new photo
+    // 2. Preload and Decode the new image in the background
     const tempImg = new Image();
     tempImg.src = photoObj.photoURL;
 
-    tempImg.onload = () => {
-      // 3. Swap src once loaded
-      rateImage.src = tempImg.src;
-
-      // 4. Animate new photo in
-      ratePhotoContainer.classList.remove("exit");
-      ratePhotoContainer.classList.add("enter");
+    try {
+      // .decode() is the secret sauce to prevent flickering
+      await tempImg.decode(); 
       
+      // 3. Wait a tiny bit for the 'exit' transition to actually finish (matching CSS time)
       setTimeout(() => {
-        ratePhotoContainer.classList.remove("enter");
-        photoContainer.classList.remove('is-active');
-photoContainer.style.boxShadow = "";
-        resolve(); // tell the caller the photo is fully in
-      }, 150);
+        // 4. Swap the actual image while the container is invisible (opacity 0)
+        rateImage.src = tempImg.src;
 
-      tempImg.onload = null;
-    };
+        // 5. Instantly switch from 'exit' state to 'enter' state (still invisible)
+        ratePhotoContainer.classList.remove("exit");
+        ratePhotoContainer.classList.add("enter");
+
+        // 6. Force a "reflow" so the browser recognizes the 'enter' state
+        void ratePhotoContainer.offsetWidth;
+
+        // 7. Remove 'enter' to trigger the smooth CSS transition back to normal
+        ratePhotoContainer.classList.remove("enter");
+        
+        // Cleanup UI states
+        photoContainer.classList.remove('is-active');
+        photoContainer.style.boxShadow = "";
+
+        setTimeout(() => {
+          resolve(); 
+        }, 300); // Wait for entrance animation to finish
+      }, 200); // This matches your exit transition speed
+
+    } catch (err) {
+      console.error("Image decode failed", err);
+      // Fallback: swap anyway if decode fails
+      rateImage.src = tempImg.src;
+      ratePhotoContainer.classList.remove("exit");
+      resolve();
+    }
   });
 }
 
@@ -784,3 +802,4 @@ function resetRatingUI() {
     photoContainer.classList.remove('is-active');
     photoContainer.style.boxShadow = "";
 }
+
