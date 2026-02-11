@@ -359,8 +359,6 @@ main {
   overflow: hidden; /* Clips the animation to the corners */
   padding: 4px;    /* Space for the "border" */
   background: #222; /* Your container background */
-  
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
 }
 
 /* The Animated "Border" Layer */
@@ -404,16 +402,28 @@ main {
 }
 
 /* 2. The Group Exit (Photo + Stamp) */
-.rate-photo.exit {
-  opacity: 0;
-  filter: blur(2px);
-  transform: translateX(120%) rotate(15deg);
+.rate-photo {
+  transition: 
+    transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+    opacity 0.2s ease,
+    filter 0.3s ease;
+  will-change: transform, opacity; /* Optimizes for mobile performance */
 }
 
-/* 3. The Group Entrance */
+/* Tossed away - Slightly faster and blurry */
+.rate-photo.exit {
+  opacity: 0;
+  filter: blur(8px);
+  transform: translateX(100%) rotate(20deg) scale(0.8);
+  transition: all 0.2s ease-in; /* Quick exit */
+}
+
+/* Prepared for entry - Hidden below and small */
 .rate-photo.enter {
   opacity: 0;
-  transform: scale(0.9) translateY(30px);
+  filter: blur(4px);
+  transform: translateY(40px) scale(0.9);
+  transition: none; /* No transition while we are resetting the position */
 }
 
 /* Ensure the image itself fills the container correctly */
@@ -988,5 +998,6 @@ nav {
 .tab.active {
   color: white;
 }
+
 
 
