@@ -10,19 +10,6 @@ body {
   display: flex;
   justify-content: center;
 }
-main {
-  /* Prevents pull-to-refresh and horizontal bounce in some browsers */
-  touch-action: pan-y; 
-  overflow-x: hidden;
-  width: 100%;
-  position: relative;
-}
-
-.page {
-  /* Ensure pages sit correctly for transitions if you add them later */
-  width: 100%;
-  transition: transform 0.3s ease-in-out;
-}
 @keyframes juicyPop {
   0% {
     transform: scale(0.95);
@@ -72,7 +59,19 @@ header {
   transition: opacity 0.2s;
   -webkit-tap-highlight-color: transparent;
 }
+main {
+  /* Prevents pull-to-refresh and horizontal bounce in some browsers */
+  touch-action: pan-y; 
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
 
+.page {
+  /* Ensure pages sit correctly for transitions if you add them later */
+  width: 100%;
+  transition: transform 0.3s ease-in-out;
+}
 .share-icon-btn:active {
   opacity: 1;
   transform: translateY(-50%) scale(0.9); /* Subtle feedback when tapped */
@@ -161,29 +160,29 @@ main {
 }
 
 .photo-preview {
-  width: 180px;
-  height: 180px;
-  border-radius: 14px;
-  background: #2a2a32;
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  overflow: hidden;
-  color: #888;
+  background: #2a2a32;
+  width: 180px;
+  height: 180px;
   text-align: center;
+  border-radius: 14px;
+   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .photo-preview img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-.photo-preview {
+  flex-shrink: 0; /* Prevents the image from shrinking when sparkles are added */
   position: relative;
-  overflow: hidden;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  z-index: 1; /* Keeps image above the container background */
+  display: block;
 }
+
 
 /* POP when upload finishes */
 .photo-preview.pop {
@@ -202,26 +201,26 @@ main {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle, rgba(255,255,255,0.35) 0%, transparent 60%);
+  background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
   opacity: 0;
-  transform: scale(0.6);
+  z-index: 2; /* Sits on top of the image */
   pointer-events: none;
 }
 
-.photo-preview.ripple::after {
-  animation: ripple 500ms ease-out forwards;
+/* Ensure the ripple actually has a start and end state */
+@keyframes ripple {
+  0% { opacity: 1; transform: scale(0.5); }
+  100% { opacity: 0; transform: scale(1.5); }
 }
 
-@keyframes ripple {
-  to {
-    opacity: 0;
-    transform: scale(1.4);
-  }
+.photo-preview.ripple::after {
+  animation: ripple 600ms ease-out forwards;
 }
 
 /* Confetti sparkles */
 .sparkle {
   position: absolute;
+  z-index: 3;
   width: 6px;
   height: 6px;
   background: white;
@@ -402,6 +401,7 @@ main {
 }
 
 /* 2. The Group Exit (Photo + Stamp) */
+/* The base state of the photo container */
 .rate-photo {
   transition: 
     transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
@@ -425,7 +425,6 @@ main {
   transform: translateY(40px) scale(0.9);
   transition: none; /* No transition while we are resetting the position */
 }
-
 /* Ensure the image itself fills the container correctly */
 .rate-photo img {
   display: block;
@@ -998,6 +997,3 @@ nav {
 .tab.active {
   color: white;
 }
-
-
-
