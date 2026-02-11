@@ -668,3 +668,31 @@ if (container && indicator) {
       });
     });
 }
+
+// Share Button
+const shareBtn = document.getElementById('shareAppBtn');
+
+shareBtn.addEventListener('click', async () => {
+  const shareData = {
+    title: 'First Impression',
+    text: 'See how others see you! Upload a photo and get anonymous feedback.',
+    url: window.location.href,
+  };
+
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+    } catch (err) {
+      // User cancelled or share failed
+      console.log('Share failed or cancelled');
+    }
+  } else {
+    // Fallback: Copy to clipboard if Share API isn't supported
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      alert('Link copied to clipboard!');
+    } catch (err) {
+      console.error('Could not copy text: ', err);
+    }
+  }
+});
