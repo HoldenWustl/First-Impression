@@ -171,6 +171,13 @@ main {
   text-align: center;
   border-radius: 14px;
    transition: transform 0.25s ease, box-shadow 0.25s ease;
+   -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  
+  /* Ensures the border-radius doesn't "leak" or flicker during animation */
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
 .photo-preview img {
@@ -181,6 +188,7 @@ main {
   position: relative;
   z-index: 1; /* Keeps image above the container background */
   display: block;
+  will-change: transform, opacity;
 }
 
 
