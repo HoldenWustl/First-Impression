@@ -696,3 +696,42 @@ shareBtn.addEventListener('click', async () => {
     }
   }
 });
+
+let touchStartX = 0;
+let touchEndX = 0;
+
+const mainContainer = document.querySelector('main');
+
+mainContainer.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+mainContainer.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+}, { passive: true });
+
+function handleSwipe() {
+    const swipeThreshold = 70; // Minimum distance in pixels to count as a swipe
+    const swipeDiff = touchEndX - touchStartX;
+
+    // Swipe Left (Go to Rate)
+    if (swipeDiff < -swipeThreshold) {
+        if (profilePage.classList.contains('active')) {
+            // Respect your existing photo upload rule
+            if (!hasUploadedPhoto) {
+                tabProfile.classList.add("shake-animation");
+                setTimeout(() => tabProfile.classList.remove("shake-animation"), 500);
+            } else {
+                switchTab("rate");
+            }
+        }
+    }
+
+    // Swipe Right (Go to You/Profile)
+    if (swipeDiff > swipeThreshold) {
+        if (ratePage.classList.contains('active')) {
+            switchTab("profile");
+        }
+    }
+}
