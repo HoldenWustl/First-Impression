@@ -737,3 +737,50 @@ function handleSwipe() {
     }
 }
 
+let photoStartX = 0;
+
+ratePhotoContainer.addEventListener('touchstart', (e) => {
+    // This stops the "Tab Swipe" from firing when touching the photo
+    e.stopPropagation(); 
+    photoStartX = e.touches[0].clientX;
+}, { passive: true });
+
+ratePhotoContainer.addEventListener('touchend', (e) => {
+    e.stopPropagation();
+    const photoEndX = e.changedTouches[0].clientX;
+    const diff = photoEndX - photoStartX;
+
+    // Threshold of 100px to skip
+    if (Math.abs(diff) > 100) {
+        skipPhoto();
+    }
+}, { passive: true });
+
+async function skipPhoto() {
+    if (isSubmitting || photosToRate.length === 0) return;
+    
+    // 1. Move to next index
+    currentPhotoIndex = (currentPhotoIndex + 1) % photosToRate.length;
+    
+    // 2. Visual feedback: Add a "slide" class before rendering
+    ratePhotoContainer.classList.add("swipe-skip");
+    
+    // 3. Render the next photo (using your existing function)
+    await renderPhoto(photosToRate[currentPhotoIndex]);
+    
+    // 4. Reset all the UI elements
+    resetRatingUI();
+    
+    // 5. Clean up animation class
+    ratePhotoContainer.classList.remove("swipe-skip");
+}
+function resetRatingUI() {
+    photoRatingBadge.classList.remove("show", "pop-in");
+    photoRatingBadge.classList.add("hidden"); // Hide the badge
+    oneWordInput.value = "";
+    selectedRating = null;
+    ratingButtons.forEach(b => b.classList.remove("selected"));
+    submitRatingBtn.classList.remove("armed", "submitted");
+    photoContainer.classList.remove('is-active');
+    photoContainer.style.boxShadow = "";
+}
