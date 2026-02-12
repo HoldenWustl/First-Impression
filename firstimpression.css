@@ -505,7 +505,53 @@ main {
   background: var(--bridge-color, #fff); /* Dynamic Color */
   box-shadow: 0 0 15px var(--bridge-color); /* Glows */
 }
+.share-results-wrapper {
+  text-align: center;
+  margin: 20px 0;
+  position: relative;
+}
 
+.btn-viral {
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(110, 142, 251, 0.4);
+}
+
+.btn-viral:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(110, 142, 251, 0.6);
+}
+
+.btn-viral svg {
+  stroke: white;
+}
+
+.copy-toast {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.copy-toast.show {
+  opacity: 1;
+}
 /* Specific Tweak for Rating 10 (Fire) */
 .rate-photo.is-on-fire ~ .rating-bridge {
   width: 160px;
