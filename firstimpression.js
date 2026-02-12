@@ -346,25 +346,30 @@ async function loadPhotosToRate() {
   const userPhoto = localStorage.getItem(USER_PHOTO_URL_KEY);
   console.log("Checking for photos... My photo is:", userPhoto);
 
-  // 1. Get ALL photos (we'll filter manually for now to avoid index issues)
-  const q = query(collection(db, "photos"), limit(20));
+  // 1. Sort by ratingsCount (ascending) and limit the result
+  const q = query(
+    collection(db, "photos"), 
+    orderBy("ratingsCount", "asc"), 
+    limit(20)
+  );
 
   try {
     const querySnapshot = await getDocs(q);
     
-    // 2. Filter out your own photo in JavaScript (easier for testing)
+    // 2. Filter out your own photo in JavaScript
     photosToRate = querySnapshot.docs
       .map(doc => ({ id: doc.id, ...doc.data() }))
       .filter(photo => photo.photoURL !== userPhoto);
 
-    shuffleArray(photosToRate);
-    console.log("Filtered photos available to rate:", photosToRate.length);
+    // REMOVED: shuffleArray(photosToRate); 
+    // We want to keep the specific order from the database now!
+
+    console.log("Sorted photos available to rate:", photosToRate.length);
 
     if (photosToRate.length > 0) {
       currentPhotoIndex = 0;
       renderPhoto(photosToRate[currentPhotoIndex]); 
     } else {
-      // 3. FALLBACK: Show a mock if the DB is empty (Remove this for production)
       console.warn("Database empty or only contains your photo. Showing mock.");
       photosToRate = [{ id: "mock", photoURL: "https://picsum.photos/400/600" }];
       renderPhoto(photosToRate[0]);
@@ -840,3 +845,4 @@ function handleSwipe() {
 //         skipPhoto();
 //     }
 // }, { passive: true });
+
