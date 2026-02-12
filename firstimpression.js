@@ -51,7 +51,7 @@ function checkRatingLimit() {
 // --- 1. Startup Logic: Check for existing photo & Sync UI ---
 (function startup() {
   const savedPhotoURL = localStorage.getItem(USER_PHOTO_URL_KEY);
-  
+
   // A. Handle Photo/Rating Unlock
   if (savedPhotoURL) {
     setPhotoPreview(savedPhotoURL);
@@ -68,7 +68,7 @@ function checkRatingLimit() {
     ratedCountEl.textContent = ratedCount;
     checkRatingLimit();
   }
-  
+
   if (progressFill) {
     const progressPercent = Math.min((ratedCount / 10) * 100, 100);
     progressFill.style.width = `${progressPercent}%`;
@@ -100,10 +100,10 @@ tabRate.onclick = () => {
 
 function switchTab(tab) {
   const isProfile = tab === "profile";
-  
+
   profilePage.classList.toggle("active", isProfile);
   ratePage.classList.toggle("active", !isProfile);
-  
+
   tabProfile.classList.toggle("active", isProfile);
   tabRate.classList.toggle("active", !isProfile);
 
@@ -116,7 +116,7 @@ function switchTab(tab) {
 
   const activeContent = isProfile ? profilePage.querySelector('.card') : ratePage.querySelector('.card');
   activeContent.style.animation = 'none';
-  void activeContent.offsetWidth; 
+  void activeContent.offsetWidth;
   activeContent.style.animation = 'juicyPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
 }
 
@@ -130,11 +130,11 @@ photoInput.onchange = async () => {
   if (!file) return;
 
   try {
-    photoPreview.innerHTML = '<div class="loader">Uploading...</div>'; 
+    photoPreview.innerHTML = '<div class="loader">Uploading...</div>';
     const photoRef = ref(storage, `photos/${crypto.randomUUID()}`);
     await uploadBytes(photoRef, file);
     const photoURL = await getDownloadURL(photoRef);
-    
+
     localStorage.setItem(USER_PHOTO_URL_KEY, photoURL);
 
     // --- UPDATED: Save the docRef so we get the ID ---
@@ -142,7 +142,7 @@ photoInput.onchange = async () => {
       photoURL,
       createdAt: serverTimestamp(),
       ratingsCount: 0,
-      averageRating: 0 
+      averageRating: 0
     });
 
     // Save the ID to localStorage
@@ -150,8 +150,10 @@ photoInput.onchange = async () => {
 
     setPhotoPreview(photoURL);
     unlockRating();
-  } catch (error) { console.error("Upload failed:", error);
-    photoPreview.innerHTML = '<p>Error uploading. Try again.</p>'; }
+  } catch (error) {
+    console.error("Upload failed:", error);
+    photoPreview.innerHTML = '<p>Error uploading. Try again.</p>';
+  }
 };
 
 // --- Helper: Render the preview image ---
@@ -160,27 +162,27 @@ function setPhotoPreview(url) {
 
   const img = new Image();
   img.src = url;
-  
- img.onload = () => {
-  // .decode() ensures the image is actually ready to be seen before we show it
-  img.decode().then(() => {
-    photoPreview.innerHTML = "";
-    photoPreview.appendChild(img);
 
-    // Give the mobile browser a "breather" before starting heavy animations
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        triggerUploadEffect();
-      }, 50); 
+  img.onload = () => {
+    // .decode() ensures the image is actually ready to be seen before we show it
+    img.decode().then(() => {
+      photoPreview.innerHTML = "";
+      photoPreview.appendChild(img);
+
+      // Give the mobile browser a "breather" before starting heavy animations
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          triggerUploadEffect();
+        }, 50);
+      });
+    }).catch((err) => {
+      console.error("Decoding failed", err);
+      // Fallback if decode fails
+      photoPreview.innerHTML = "";
+      photoPreview.appendChild(img);
+      triggerUploadEffect();
     });
-  }).catch((err) => {
-    console.error("Decoding failed", err);
-    // Fallback if decode fails
-    photoPreview.innerHTML = "";
-    photoPreview.appendChild(img);
-    triggerUploadEffect();
-  });
-};
+  };
 
   img.onerror = () => {
     console.error("Failed to load profile photo from storage.");
@@ -240,7 +242,7 @@ async function fetchMyResults() {
 
       if (marker) {
         const dot = marker.querySelector(".marker-dot");
-        
+
         // Calculate Position
         let positionPercent = (avg / 10) * 100;
         positionPercent = Math.max(5, Math.min(95, positionPercent));
@@ -304,16 +306,16 @@ async function fetchMyResults() {
 // --- Helper: Unlock the app features ---
 function unlockRating() {
   hasUploadedPhoto = true;
-  
+
   // Enable button
   startRatingBtn.disabled = false;
   startRatingBtn.classList.add("armed");
   startRatingBtn.classList.remove("disabled"); // If you use a class for styling
-  
+
   // Update Tab visuals
   tabRate.style.opacity = "1";
   tabRate.style.cursor = "pointer";
-  
+
   // Optional: Change button text
   startRatingBtn.textContent = "Start Rating";
 }
@@ -348,14 +350,14 @@ async function loadPhotosToRate() {
 
   // 1. Sort by ratingsCount (ascending) and limit the result
   const q = query(
-    collection(db, "photos"), 
-    orderBy("ratingsCount", "asc"), 
+    collection(db, "photos"),
+    orderBy("ratingsCount", "asc"),
     limit(20)
   );
 
   try {
     const querySnapshot = await getDocs(q);
-    
+
     // 2. Filter out your own photo in JavaScript
     photosToRate = querySnapshot.docs
       .map(doc => ({ id: doc.id, ...doc.data() }))
@@ -368,7 +370,7 @@ async function loadPhotosToRate() {
 
     if (photosToRate.length > 0) {
       currentPhotoIndex = 0;
-      renderPhoto(photosToRate[currentPhotoIndex]); 
+      renderPhoto(photosToRate[currentPhotoIndex]);
     } else {
       console.warn("Database empty or only contains your photo. Showing mock.");
       photosToRate = [{ id: "mock", photoURL: "https://picsum.photos/400/600" }];
@@ -385,28 +387,29 @@ async function renderPhoto(photoObj) {
   return new Promise(async (resolve) => {
     // 1. START EXIT: Toss the old card away
     ratePhotoContainer.classList.add("exit");
-    
+
     // 2. PRELOAD: Get the new image ready in the background
     const tempImg = new Image();
     tempImg.src = photoObj.photoURL;
 
     try {
-      await tempImg.decode(); 
+      await tempImg.decode();
 
       // 3. THE FLICKER KILLER:
       // Wait for the exit animation to be halfway done, then BLANK the old image.
       setTimeout(() => {
         rateImage.style.opacity = "0"; // Hide the old pixels
         rateImage.src = tempImg.src;   // Swap the source
-      }, 150); 
+      }, 150);
 
       // 4. PREPARE ENTRY
       setTimeout(() => {
         ratePhotoContainer.classList.remove("exit");
         ratePhotoContainer.classList.add("enter");
         photoContainer.classList.remove('is-on-fire', 'is-frozen');
+        ratingBridge.classList.remove('active');
         photoRatingBadge.classList.remove("show", "pop-in");
-    photoRatingBadge.classList.add("hidden"); // Hide the badge
+        photoRatingBadge.classList.add("hidden"); // Hide the badge
         // Force reflow
         void ratePhotoContainer.offsetWidth;
 
@@ -416,8 +419,8 @@ async function renderPhoto(photoObj) {
 
         // UI Cleanup
         photoContainer.classList.remove('is-active');
-        
-        setTimeout(() => resolve(), 400); 
+
+        setTimeout(() => resolve(), 400);
       }, 250); // Match this to your CSS exit duration
 
     } catch (err) {
@@ -427,45 +430,6 @@ async function renderPhoto(photoObj) {
       resolve();
     }
   });
-}
-
-
-
-async function skipPhoto() {
-    if (isSubmitting || photosToRate.length === 0) return;
-    
-    // 1. Move to next index
-    currentPhotoIndex = (currentPhotoIndex + 1) % photosToRate.length;
-    
-    // 2. Visual feedback: Add a "slide" class before rendering
-    ratePhotoContainer.classList.add("swipe-skip");
-    
-    // 3. Render the next photo (using your existing function)
-    await renderPhoto(photosToRate[currentPhotoIndex]);
-    
-    // 4. Reset all the UI elements
-    resetRatingUI();
-    
-    // 5. Clean up animation class
-    ratePhotoContainer.classList.remove("swipe-skip");
-}
-function resetRatingUI() {
-    photoRatingBadge.classList.remove("show", "pop-in");
-    photoRatingBadge.classList.add("hidden"); // Hide the badge
-    ratingBridge.classList.remove('active');
-    ratingBridge.style.removeProperty('--bridge-color');
-    photoContainer.classList.remove('is-on-fire', 'is-frozen');
-    oneWordInput.value = "";
-    selectedRating = null;
-    ratingButtons.forEach(b => b.classList.remove("selected"));
-    submitRatingBtn.classList.remove("armed", "submitted");
-    photoContainer.classList.remove('is-active');
-    photoContainer.style.boxShadow = "";
-}
-// Update your submit logic to use these:
-function displayNextPhoto() {
-  currentPhotoIndex = (currentPhotoIndex + 1) % photosToRate.length;
-  renderPhoto(photosToRate[currentPhotoIndex]);
 }
 
 // Update the Tab Switcher to trigger the load
@@ -488,46 +452,47 @@ ratingButtons.forEach(button => {
 
     selectedRating = button.dataset.value;
     if (!isSubmitting) {
-    // Update badge text
-    photoRatingBadge.textContent = selectedRating;
-   const rotation = -15 + Math.random() * 30;
-photoRatingBadge.style.setProperty("--badge-rotation", `${rotation}deg`);
+      // Update badge text
+      photoRatingBadge.textContent = selectedRating;
+      const rotation = -15 + Math.random() * 30;
+      photoRatingBadge.style.setProperty("--badge-rotation", `${rotation}deg`);
 
 
-    // Pull color from button CSS variable
-    const color = getComputedStyle(button).getPropertyValue("--btn-color");
-    photoRatingBadge.style.setProperty("--rating-color", color);
-    photoContainer.style.setProperty('--accent-color', color);
-    submitRatingBtn.style.setProperty('--submit-color', color);
-    ratingBridge.style.setProperty('--bridge-color', color);
-photoContainer.classList.add('is-active');
-photoContainer.style.boxShadow = `0 0 25px ${color}66`;
+      // Pull color from button CSS variable
+      const color = getComputedStyle(button).getPropertyValue("--btn-color");
+      photoRatingBadge.style.setProperty("--rating-color", color);
+      photoContainer.style.setProperty('--accent-color', color);
+      submitRatingBtn.style.setProperty('--submit-color', color);
+      ratingBridge.style.setProperty('--bridge-color', color);
+      photoContainer.classList.add('is-active');
+      photoContainer.style.boxShadow = `0 0 25px ${color}66`;
 
       photoContainer.classList.remove('is-on-fire', 'is-frozen');
 
-    if (selectedRating === "10") {
-      photoContainer.classList.add('is-on-fire');
-    } else if (selectedRating === "1") {
-      photoContainer.classList.add('is-frozen');
+      if (selectedRating === "10") {
+        photoContainer.classList.add('is-on-fire');
+      } else if (selectedRating === "1") {
+        photoContainer.classList.add('is-frozen');
+      }
+
+      // 🔥 Re-trigger pop animation
+      photoRatingBadge.classList.remove("show");
+      void photoRatingBadge.offsetWidth; // force reflow
+      photoRatingBadge.classList.add("show");
+
+      // ✨ Quick brightness punch
+      photoRatingBadge.style.filter = "brightness(1.2)";
+      setTimeout(() => {
+        photoRatingBadge.style.filter = "";
+      }, 120);
     }
 
-    // 🔥 Re-trigger pop animation
-    photoRatingBadge.classList.remove("show");
-    void photoRatingBadge.offsetWidth; // force reflow
-    photoRatingBadge.classList.add("show");
-
-    // ✨ Quick brightness punch
-    photoRatingBadge.style.filter = "brightness(1.2)";
-    setTimeout(() => {
-      photoRatingBadge.style.filter = "";
-    }, 120);}
-
     photoRatingBadge.classList.remove("hidden");
-    
+
     submitRatingBtn.classList.remove("armed");
-void submitRatingBtn.offsetWidth; // Force reflow
-submitRatingBtn.classList.add("armed");
-ratingBridge.classList.add('active');
+    void submitRatingBtn.offsetWidth; // Force reflow
+    submitRatingBtn.classList.add("armed");
+    ratingBridge.classList.add('active');
   });
 });
 
@@ -542,13 +507,13 @@ function createParticles(x, y, color) {
     p.style.width = p.style.height = Math.random() * 8 + 4 + 'px';
     p.style.left = x + 'px';
     p.style.top = y + 'px';
-    
+
     // Random direction
     const tx = (Math.random() - 0.5) * 200;
     const ty = (Math.random() - 0.5) * 200;
     p.style.setProperty('--tx', `${tx}px`);
     p.style.setProperty('--ty', `${ty}px`);
-    
+
     document.body.appendChild(p);
     setTimeout(() => p.remove(), 600);
   }
@@ -565,14 +530,14 @@ submitRatingBtn.onclick = async (e) => {
   const currentPhoto = photosToRate[currentPhotoIndex];
   const ratingValue = Number(selectedRating);
   const color = getComputedStyle(photoRatingBadge).getPropertyValue("--rating-color");
-  const userWord = oneWordInput.value.trim(); 
+  const userWord = oneWordInput.value.trim();
 
   createParticles(e.clientX, e.clientY, color);
   submitRatingBtn.classList.add("submitted");
 
   try {
     const photoRef = doc(db, "photos", currentPhoto.id);
-    
+
     const [newAverage, recentRatingsSnap, _] = await Promise.all([
       // Task A: Transaction
       runTransaction(db, async (transaction) => {
@@ -592,7 +557,7 @@ submitRatingBtn.onclick = async (e) => {
         collection(db, "ratings"),
         where("photoId", "==", currentPhoto.id),
         orderBy("timestamp", "desc"),
-        limit(10) 
+        limit(10)
       )),
 
       // Task C: Save new rating
@@ -606,17 +571,17 @@ submitRatingBtn.onclick = async (e) => {
 
     // --- 3. Process Words (Logic Update) ---
     let displayWords = [];
-    
+
     // 1. Add current user word first
-    if(userWord) displayWords.push(userWord);
+    if (userWord) displayWords.push(userWord);
 
     // 2. Add words from DB (Filter duplicates & empty strings)
     recentRatingsSnap.forEach(doc => {
-        const w = doc.data().word;
-        // Check if word exists, isn't empty, and isn't a duplicate
-        if(w && w.trim().length > 0 && !displayWords.includes(w)) {
-            displayWords.push(w);
-        }
+      const w = doc.data().word;
+      // Check if word exists, isn't empty, and isn't a duplicate
+      if (w && w.trim().length > 0 && !displayWords.includes(w)) {
+        displayWords.push(w);
+      }
     });
 
     // 3. STRICT LIMIT: Ensure we never send more than 3
@@ -626,7 +591,7 @@ submitRatingBtn.onclick = async (e) => {
     await showAveragePop(newAverage, color, displayWords);
 
     // --- (Rest of logic) ---
-    currentPhotoIndex = (currentPhotoIndex + 1) % photosToRate.length;
+    goToNextPhoto(); // Move to the next photo in the list
     await renderPhoto(photosToRate[currentPhotoIndex]);
 
     ratedCount++;
@@ -647,7 +612,7 @@ submitRatingBtn.onclick = async (e) => {
   } finally {
     isSubmitting = false;
     submitRatingBtn.disabled = false;
-    if(navigator.vibrate) navigator.vibrate(10);
+    if (navigator.vibrate) navigator.vibrate(10);
   }
 };
 
@@ -656,17 +621,17 @@ function showAveragePop(avg, color, words = []) {
   return new Promise((resolve) => {
     const overlay = document.getElementById("average-overlay");
     const textEl = overlay.querySelector(".avg-number");
-    const wordsContainer = document.getElementById("avg-words-container"); 
-    
+    const wordsContainer = document.getElementById("avg-words-container");
+
     // Clear previous words
     wordsContainer.innerHTML = "";
-    
+
     overlay.style.color = color;
     overlay.classList.add("active");
 
     // 1. Number Animation (Standard)
     const startTime = performance.now();
-    const duration = 600; 
+    const duration = 600;
 
     function updateNumber(now) {
       const elapsed = now - startTime;
@@ -677,30 +642,30 @@ function showAveragePop(avg, color, words = []) {
     requestAnimationFrame(updateNumber);
 
     // 2. Words Animation (Staggered)
-    if(words.length > 0) {
-        setTimeout(() => {
-            words.forEach((word, index) => {
-                const pill = document.createElement("div");
-                pill.className = "avg-word-pill";
-                pill.textContent = word;
-                // Add a border matching the rating color
-                pill.style.border = `2px solid ${color}`;
-                pill.style.animationDelay = `${index * 150}ms`;
-                
-                wordsContainer.appendChild(pill);
-                
-                // Force Reflow
-                void pill.offsetWidth;
-                pill.classList.add("pop");
-            });
-        }, 200);
+    if (words.length > 0) {
+      setTimeout(() => {
+        words.forEach((word, index) => {
+          const pill = document.createElement("div");
+          pill.className = "avg-word-pill";
+          pill.textContent = word;
+          // Add a border matching the rating color
+          pill.style.border = `2px solid ${color}`;
+          pill.style.animationDelay = `${index * 150}ms`;
+
+          wordsContainer.appendChild(pill);
+
+          // Force Reflow
+          void pill.offsetWidth;
+          pill.classList.add("pop");
+        });
+      }, 200);
     }
 
     // 3. Cleanup
     setTimeout(() => {
       overlay.classList.remove("active");
       // Fade out words manually or just clear innerHTML
-      wordsContainer.innerHTML = ""; 
+      wordsContainer.innerHTML = "";
       resolve();
     }, 2000); // 2 seconds total display time
   });
@@ -712,24 +677,24 @@ const privacyBtn = document.getElementById("privacyBtn");
 const privacyModal = document.getElementById("privacyModal");
 const closePrivacyBtn = document.getElementById("closePrivacyBtn");
 
-if(privacyBtn) {
-    privacyBtn.onclick = () => {
-        privacyModal.classList.remove("hidden");
-    };
+if (privacyBtn) {
+  privacyBtn.onclick = () => {
+    privacyModal.classList.remove("hidden");
+  };
 }
 
-if(closePrivacyBtn) {
-    closePrivacyBtn.onclick = () => {
-        privacyModal.classList.add("hidden");
-    };
+if (closePrivacyBtn) {
+  closePrivacyBtn.onclick = () => {
+    privacyModal.classList.add("hidden");
+  };
 }
 
-if(privacyModal) {
-    privacyModal.onclick = (e) => {
-        if (e.target === privacyModal) {
-            privacyModal.classList.add("hidden");
-        }
-    };
+if (privacyModal) {
+  privacyModal.onclick = (e) => {
+    if (e.target === privacyModal) {
+      privacyModal.classList.add("hidden");
+    }
+  };
 }
 
 // --- Floating Indicator Logic ---
@@ -737,26 +702,26 @@ const indicator = document.getElementById('ratingIndicator');
 const container = document.getElementById('ratingGrid');
 
 if (container && indicator) {
-    ratingButtons.forEach(btn => {
-      btn.addEventListener('click', function() {
-        // UI Classes handled in previous loop
-        indicator.classList.add('active');
+  ratingButtons.forEach(btn => {
+    btn.addEventListener('click', function () {
+      // UI Classes handled in previous loop
+      indicator.classList.add('active');
 
-        // Position Math
-        const btnRect = this.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        
-        const x = (btnRect.left - containerRect.left) + (btnRect.width / 2) - 8; 
-        const y = -(btnRect.height + 5); 
+      // Position Math
+      const btnRect = this.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
 
-        indicator.style.transform = `translateX(${x}px) translateY(${y}px)`;
-        
-        const btnColor = getComputedStyle(this).getPropertyValue('--btn-color');
-        if(btnColor) {
-            indicator.style.backgroundColor = btnColor;
-        }
-      });
+      const x = (btnRect.left - containerRect.left) + (btnRect.width / 2) - 8;
+      const y = -(btnRect.height + 5);
+
+      indicator.style.transform = `translateX(${x}px) translateY(${y}px)`;
+
+      const btnColor = getComputedStyle(this).getPropertyValue('--btn-color');
+      if (btnColor) {
+        indicator.style.backgroundColor = btnColor;
+      }
     });
+  });
 }
 
 //Share Button
@@ -793,38 +758,38 @@ let touchEndX = 0;
 const mainContainer = document.querySelector('main');
 
 mainContainer.addEventListener('touchstart', e => {
-    touchStartX = e.changedTouches[0].screenX;
+  touchStartX = e.changedTouches[0].screenX;
 }, { passive: true });
 
 mainContainer.addEventListener('touchend', e => {
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipe();
+  touchEndX = e.changedTouches[0].screenX;
+  handleSwipe();
 }, { passive: true });
 
 function handleSwipe() {
-    const swipeThreshold = 70; // Minimum distance in pixels to count as a swipe
-    const swipeDiff = touchEndX - touchStartX;
+  const swipeThreshold = 70; // Minimum distance in pixels to count as a swipe
+  const swipeDiff = touchEndX - touchStartX;
 
-    // Swipe Left (Go to Rate)
-    if (swipeDiff < -swipeThreshold) {
-        if (profilePage.classList.contains('active')) {
-            // Respect your existing photo upload rule
-            if (!hasUploadedPhoto) {
-                tabProfile.classList.add("shake-animation");
-                setTimeout(() => tabProfile.classList.remove("shake-animation"), 500);
-            } else {
-              if (photosToRate.length === 0) loadPhotosToRate();
-                switchTab("rate");
-            }
-        }
+  // Swipe Left (Go to Rate)
+  if (swipeDiff < -swipeThreshold) {
+    if (profilePage.classList.contains('active')) {
+      // Respect your existing photo upload rule
+      if (!hasUploadedPhoto) {
+        tabProfile.classList.add("shake-animation");
+        setTimeout(() => tabProfile.classList.remove("shake-animation"), 500);
+      } else {
+        if (photosToRate.length === 0) loadPhotosToRate();
+        switchTab("rate");
+      }
     }
+  }
 
-    // Swipe Right (Go to You/Profile)
-    if (swipeDiff > swipeThreshold) {
-        if (ratePage.classList.contains('active')) {
-            switchTab("profile");
-        }
+  // Swipe Right (Go to You/Profile)
+  if (swipeDiff > swipeThreshold) {
+    if (ratePage.classList.contains('active')) {
+      switchTab("profile");
     }
+  }
 }
 
 // let photoStartX = 0;
@@ -851,7 +816,7 @@ document.getElementById('shareResultsBtn').addEventListener('click', async () =>
   const avg = document.querySelector(".my-avg-rating").textContent.split(' ')[0];
   const words = Array.from(document.querySelectorAll(".word-tag")).map(el => el.textContent);
   const topWord = words.length > 0 ? words[0] : "Mysterious"; // Takes the most recent word
-  
+
   const shareData = {
     title: 'First Impression',
     text: `People think my vibe is "${topWord}"! I got a ${avg}/10 score on First Impression. See what people think of you:`,
@@ -877,4 +842,35 @@ function showToast() {
   const toast = document.getElementById('copyToast');
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+let currentMode = 'new'; // Default mode
+
+// Event Listeners for the buttons
+document.getElementById('setNewMode').addEventListener('click', () => setMode('new'));
+document.getElementById('setRandomMode').addEventListener('click', () => setMode('random'));
+
+function setMode(mode) {
+  currentMode = mode;
+  // Update UI classes
+  document.getElementById('setNewMode').classList.toggle('active', mode === 'new');
+  document.getElementById('setRandomMode').classList.toggle('active', mode === 'random');
+}
+
+// Update your submit button logic or wherever you change the photo
+function goToNextPhoto() {
+  if (photosToRate.length <= 1) return; // Nothing to switch to
+
+  if (currentMode === 'new') {
+    // Your existing linear logic
+    currentPhotoIndex = (currentPhotoIndex + 1) % photosToRate.length;
+  } else {
+    // Random logic: ensures the next index is different from the current one
+    let nextIndex;
+    do {
+      nextIndex = Math.floor(Math.random() * photosToRate.length);
+    } while (nextIndex === currentPhotoIndex);
+
+    currentPhotoIndex = nextIndex;
+  }
 }
