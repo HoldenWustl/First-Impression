@@ -779,6 +779,40 @@ input[type="text"] {
     filter: brightness(1);
   }
 }
+/* The "1" Effect: Cold & Heavy */
+.rate-photo.is-frozen {
+  /* Cold, dark blue/gray glow */
+  box-shadow: 
+    0 0 15px #1a1a1a,
+    0 0 30px rgba(0, 153, 255, 0.2) !important;
+  
+  /* Drains the life/color out of the photo */
+  filter: grayscale(100%) brightness(0.8);
+  
+  /* A subtle "shiver" animation */
+  animation: shiver 0.4s infinite;
+  transition: all 0.5s ease;
+}
+
+/* Slow, dim border for the "1" state */
+.rate-photo.is-frozen::before {
+  background: conic-gradient(
+    transparent, 
+    #2c2c2c 10%, 
+    #004e92 20%, 
+    transparent 40%
+  );
+  animation-duration: 8s; /* Very slow, almost stagnant */
+}
+
+/* The Shiver: High frequency, very low movement */
+@keyframes shiver {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(0.5px); }
+  50% { transform: translateX(-0.5px); }
+  75% { transform: translateX(0.5px); }
+  100% { transform: translateX(0); }
+}
 #photoRatingBadge {
   position: absolute;
   top: 14px;
