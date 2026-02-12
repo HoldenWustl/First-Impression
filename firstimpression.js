@@ -399,7 +399,9 @@ async function renderPhoto(photoObj) {
       setTimeout(() => {
         ratePhotoContainer.classList.remove("exit");
         ratePhotoContainer.classList.add("enter");
-
+        ratePhotoContainer.classList.remove('is-on-fire');
+        photoRatingBadge.classList.remove("show", "pop-in");
+    photoRatingBadge.classList.add("hidden"); // Hide the badge
         // Force reflow
         void ratePhotoContainer.offsetWidth;
 
@@ -489,6 +491,13 @@ photoRatingBadge.style.setProperty("--badge-rotation", `${rotation}deg`);
     photoContainer.style.setProperty('--accent-color', color);
 photoContainer.classList.add('is-active');
 photoContainer.style.boxShadow = `0 0 25px ${color}66`;
+
+      if (selectedRating === "10") {
+      photoContainer.classList.add('is-on-fire');
+    } else {
+      photoContainer.classList.remove('is-on-fire');
+    }
+
     // 🔥 Re-trigger pop animation
     photoRatingBadge.classList.remove("show");
     void photoRatingBadge.offsetWidth; // force reflow
