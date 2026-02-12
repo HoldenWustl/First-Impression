@@ -484,7 +484,41 @@ main {
     box-shadow 0.3s ease, 
     transform 0.1s active;
 }
+.rating-bridge {
+  /* Default State: Small, subtle white pill */
+  width: 40px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  margin: 12px auto; /* Centers it and adds spacing */
+  
+  /* The "Juice" Transitions */
+  transition: 
+    width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), /* Bouncy width */
+    background 0.3s ease,
+    box-shadow 0.3s ease;
+}
 
+/* When a rating is active */
+.rating-bridge.active {
+  width: 120px; /* Expands to connect the UI elements */
+  background: var(--bridge-color, #fff); /* Dynamic Color */
+  box-shadow: 0 0 15px var(--bridge-color); /* Glows */
+}
+
+/* Specific Tweak for Rating 10 (Fire) */
+.rate-photo.is-on-fire ~ .rating-bridge {
+  width: 160px;
+  background: linear-gradient(90deg, #ff3d00, #ffca28);
+  height: 6px;
+}
+
+/* Specific Tweak for Rating 1 (Ice) */
+.rate-photo.is-frozen ~ .rating-bridge {
+  width: 100%; /* Spans the whole width like a flatline */
+  background: #2c2c2c;
+  opacity: 0.5;
+}
 /* 3. Tactile Press - Like pushing a real rubber button */
 .primary-btn.armed:active {
   transform: scale(0.94) translateY(2px);
