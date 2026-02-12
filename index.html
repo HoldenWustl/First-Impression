@@ -20,14 +20,15 @@
       <h1>First Impression</h1>
       <p id="subtitle">See how others see you</p>
       <button id="shareAppBtn" class="share-icon-btn" aria-label="Share">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="18" cy="5" r="3"></circle>
-      <circle cx="6" cy="12" r="3"></circle>
-      <circle cx="18" cy="19" r="3"></circle>
-      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-    </svg>
-  </button>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="18" cy="5" r="3"></circle>
+          <circle cx="6" cy="12" r="3"></circle>
+          <circle cx="18" cy="19" r="3"></circle>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+        </svg>
+      </button>
     </header>
 
     <!-- MAIN CONTENT -->
@@ -46,66 +47,66 @@
           </div>
 
           <div id="preResultsAction">
-      <button id="startRatingBtn" class="primary-btn" disabled>
-        Start Rating Others
-      </button>
-      <p class="hint">
-        You must rate 10 others to unlock your results.
-      </p>
-    </div>
+            <button id="startRatingBtn" class="primary-btn" disabled>
+              Start Rating Others
+            </button>
+            <p class="hint">
+              You must rate 10 others to unlock your results.
+            </p>
+          </div>
 
-    <div id="resultsContainer" class="hidden">
-      <div class="results-divider"></div>
-      <h3>Community Score</h3>
-      <div class="my-avg-rating">0.0</div>
-      <div class="curve-container">
-  <div class="curve-title">Global Comparison</div>
-  
-  <div class="graph-wrapper">
-    <svg viewBox="0 0 100 35" preserveAspectRatio="none" class="bell-curve">
-      <path d="M0,35 C20,35 30,5 50,5 C70,5 80,35 100,35" 
-            fill="url(#gradientFill)" />
-      
-      <defs>
-        <linearGradient id="gradientFill" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stop-color="rgba(255, 255, 255, 0.4)" />
-          <stop offset="100%" stop-color="rgba(255, 255, 255, 0.05)" />
-        </linearGradient>
-      </defs>
-    </svg>
+          <div id="resultsContainer" class="hidden">
+            <div class="results-divider"></div>
+            <h3>Community Score</h3>
+            <div class="my-avg-rating">0.0</div>
+            <div class="curve-container">
+              <div class="curve-title">Global Comparison</div>
 
-    <div id="userMarker" class="marker">
-      <div class="marker-dot"></div>
-      <div class="marker-line"></div>
-      <div class="marker-label">YOU</div>
-    </div>
-    
-    <div class="axis-labels">
-      <span>1</span>
-      <span>5</span>
-      <span>10</span>
-    </div>
-  </div>
-  
-  <p id="percentileText" class="percentile-text">Data is still being gathered...</p>
-</div>
-      <p class="results-note">Based on anonymous impressions</p>
-      <div class="share-results-wrapper">
-  <button id="shareResultsBtn" class="btn-viral">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-      <polyline points="16 6 12 2 8 6"></polyline>
-      <line x1="12" y1="2" x2="12" y2="15"></line>
-    </svg>
-    Share My Vibe
-  </button>
-  <div id="copyToast" class="copy-toast hidden">Link copied to clipboard!</div>
-</div>
-      <div class="results-divider"></div>
-  <h3>Impressions</h3>
-  <div id="impressionsList" class="impressions-grid">
-     </div>
-    </div>
+              <div class="graph-wrapper">
+                <svg viewBox="0 0 100 35" preserveAspectRatio="none" class="bell-curve">
+                  <path d="M0,35 C20,35 30,5 50,5 C70,5 80,35 100,35" fill="url(#gradientFill)" />
+
+                  <defs>
+                    <linearGradient id="gradientFill" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" stop-color="rgba(255, 255, 255, 0.4)" />
+                      <stop offset="100%" stop-color="rgba(255, 255, 255, 0.05)" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+
+                <div id="userMarker" class="marker">
+                  <div class="marker-dot"></div>
+                  <div class="marker-line"></div>
+                  <div class="marker-label">YOU</div>
+                </div>
+
+                <div class="axis-labels">
+                  <span>1</span>
+                  <span>5</span>
+                  <span>10</span>
+                </div>
+              </div>
+
+              <p id="percentileText" class="percentile-text">Data is still being gathered...</p>
+            </div>
+            <p class="results-note">Based on anonymous impressions</p>
+            <div class="share-results-wrapper">
+              <button id="shareResultsBtn" class="btn-viral">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                  <polyline points="16 6 12 2 8 6"></polyline>
+                  <line x1="12" y1="2" x2="12" y2="15"></line>
+                </svg>
+                Share My Vibe
+              </button>
+              <div id="copyToast" class="copy-toast hidden">Link copied to clipboard!</div>
+            </div>
+            <div class="results-divider"></div>
+            <h3>Impressions</h3>
+            <div id="impressionsList" class="impressions-grid">
+            </div>
+          </div>
 
           <button id="privacyBtn" class="link-btn">
             Privacy & Terms
@@ -117,7 +118,10 @@
       <!-- RATE PAGE -->
       <section id="ratePage" class="page">
         <div class="card">
-
+          <div class="mode-selector">
+            <button id="setNewMode" class="mode-btn active">New</button>
+            <button id="setRandomMode" class="mode-btn">Random</button>
+          </div>
           <div class="rate-photo">
             <img id="rateImage" src="" alt="Person to rate" />
             <div id="photoRatingBadge" class="hidden">
@@ -126,9 +130,9 @@
             <div id="average-overlay">
               <span class="avg-label">Average Rating</span>
               <span class="avg-number">0.0</span>
-              
+
             </div>
-            
+
           </div>
           <div id="avg-words-container" class="avg-words-container"></div>
           <div id="ratingBridge" class="rating-bridge"></div>
@@ -165,8 +169,8 @@
             <div id="progressFill" class="progress-fill"></div>
           </div>
           <p class="counter">
-  Rated <span id="ratedCount">0</span><span id="ratingLimit"> / 10</span>
-</p>
+            Rated <span id="ratedCount">0</span><span id="ratingLimit"> / 10</span>
+          </p>
 
         </div>
       </section>
