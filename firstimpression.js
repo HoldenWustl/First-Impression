@@ -447,6 +447,9 @@ async function skipPhoto() {
 function resetRatingUI() {
     photoRatingBadge.classList.remove("show", "pop-in");
     photoRatingBadge.classList.add("hidden"); // Hide the badge
+    ratingBridge.classList.remove('active');
+    ratingBridge.style.removeProperty('--bridge-color');
+    photoContainer.classList.remove('is-on-fire', 'is-frozen');
     oneWordInput.value = "";
     selectedRating = null;
     ratingButtons.forEach(b => b.classList.remove("selected"));
@@ -471,6 +474,7 @@ let selectedRating = null;
 const photoRatingBadge = document.getElementById("photoRatingBadge");
 const ratingButtons = document.querySelectorAll(".rating-btn");
 const photoContainer = document.querySelector('.rate-photo');
+const ratingBridge = document.getElementById("ratingBridge");
 
 ratingButtons.forEach(button => {
   button.addEventListener("click", () => {
@@ -490,6 +494,7 @@ photoRatingBadge.style.setProperty("--badge-rotation", `${rotation}deg`);
     photoRatingBadge.style.setProperty("--rating-color", color);
     photoContainer.style.setProperty('--accent-color', color);
     submitRatingBtn.style.setProperty('--submit-color', color);
+    ratingBridge.style.setProperty('--bridge-color', color);
 photoContainer.classList.add('is-active');
 photoContainer.style.boxShadow = `0 0 25px ${color}66`;
 
@@ -517,6 +522,7 @@ photoContainer.style.boxShadow = `0 0 25px ${color}66`;
     submitRatingBtn.classList.remove("armed");
 void submitRatingBtn.offsetWidth; // Force reflow
 submitRatingBtn.classList.add("armed");
+ratingBridge.classList.add('active');
   });
 });
 
