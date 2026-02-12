@@ -846,3 +846,35 @@ function handleSwipe() {
 //     }
 // }, { passive: true });
 
+
+document.getElementById('shareResultsBtn').addEventListener('click', async () => {
+  const avg = document.querySelector(".my-avg-rating").textContent.split(' ')[0];
+  const words = Array.from(document.querySelectorAll(".word-tag")).map(el => el.textContent);
+  const topWord = words.length > 0 ? words[0] : "Mysterious"; // Takes the most recent word
+  
+  const shareData = {
+    title: 'First Impression',
+    text: `People think my vibe is "${topWord}"! I got a ${avg}/10 score on First Impression. See what people think of you:`,
+    url: window.location.origin // Or your specific app URL
+  };
+
+  try {
+    if (navigator.share) {
+      // Use native mobile share sheet (Instagram, WhatsApp, etc.)
+      await navigator.share(shareData);
+    } else {
+      // Fallback: Copy to clipboard
+      const fallbackText = `${shareData.text} ${shareData.url}`;
+      await navigator.clipboard.writeText(fallbackText);
+      showToast();
+    }
+  } catch (err) {
+    console.log("Share failed", err);
+  }
+});
+
+function showToast() {
+  const toast = document.getElementById('copyToast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
