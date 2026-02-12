@@ -489,6 +489,7 @@ photoRatingBadge.style.setProperty("--badge-rotation", `${rotation}deg`);
     const color = getComputedStyle(button).getPropertyValue("--btn-color");
     photoRatingBadge.style.setProperty("--rating-color", color);
     photoContainer.style.setProperty('--accent-color', color);
+    submitRatingBtn.style.setProperty('--submit-color', color);
 photoContainer.classList.add('is-active');
 photoContainer.style.boxShadow = `0 0 25px ${color}66`;
 
@@ -512,7 +513,10 @@ photoContainer.style.boxShadow = `0 0 25px ${color}66`;
     }, 120);}
 
     photoRatingBadge.classList.remove("hidden");
-    submitRatingBtn.classList.add("armed");
+    
+    submitRatingBtn.classList.remove("armed");
+void submitRatingBtn.offsetWidth; // Force reflow
+submitRatingBtn.classList.add("armed");
   });
 });
 
