@@ -10,25 +10,39 @@ body {
   display: flex;
   justify-content: center;
 }
+
 @keyframes juicyPop {
   0% {
     transform: scale(0.95);
     filter: brightness(0.8);
   }
+
   100% {
     transform: scale(1);
     filter: brightness(1);
   }
 }
+
 .shake-animation {
   animation: shake 0.4s ease-in-out;
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  75% {
+    transform: translateX(5px);
+  }
 }
+
 #app {
   width: 100%;
   max-width: 420px;
@@ -41,8 +55,10 @@ header {
   padding: 24px 20px 10px;
   text-align: center;
 }
+
 header {
-  position: relative; /* Essential for positioning the button */
+  position: relative;
+  /* Essential for positioning the button */
 }
 
 .share-icon-btn {
@@ -52,16 +68,18 @@ header {
   transform: translateY(-50%);
   background: transparent;
   border: none;
-  color: white; /* Or match your h1 color */
+  color: white;
+  /* Or match your h1 color */
   padding: 10px;
   cursor: pointer;
   opacity: 0.7;
   transition: opacity 0.2s;
   -webkit-tap-highlight-color: transparent;
 }
+
 main {
   /* Prevents pull-to-refresh and horizontal bounce in some browsers */
-  touch-action: pan-y; 
+  touch-action: pan-y;
   overflow-x: hidden;
   width: 100%;
   position: relative;
@@ -72,10 +90,13 @@ main {
   width: 100%;
   transition: transform 0.3s ease-in-out;
 }
+
 .share-icon-btn:active {
   opacity: 1;
-  transform: translateY(-50%) scale(0.9); /* Subtle feedback when tapped */
+  transform: translateY(-50%) scale(0.9);
+  /* Subtle feedback when tapped */
 }
+
 header h1 {
   margin: 0;
   font-size: 28px;
@@ -95,10 +116,11 @@ main {
 /* 1. The main container stays as the "window" */
 main {
   position: relative;
-  overflow: hidden; /* This keeps the pages from showing when they are off-screen */
+  overflow: hidden;
+  /* This keeps the pages from showing when they are off-screen */
   width: 100%;
   /* Use flex-grow or a calculated height so it fills the space between header and nav */
-  height: calc(100vh - 130px); 
+  height: calc(100vh - 130px);
 }
 
 /* 2. The pages now handle the scrolling */
@@ -107,19 +129,23 @@ main {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%; /* Fills the main container */
-  
+  height: 100%;
+  /* Fills the main container */
+
   /* --- THE FIX --- */
-  overflow-y: auto;  /* Allows vertical scrolling */
-  overflow-x: hidden; /* Prevents awkward side-shaking */
-  -webkit-overflow-scrolling: touch; /* Makes scrolling smooth on iPhones */
-  
+  overflow-y: auto;
+  /* Allows vertical scrolling */
+  overflow-x: hidden;
+  /* Prevents awkward side-shaking */
+  -webkit-overflow-scrolling: touch;
+  /* Makes scrolling smooth on iPhones */
+
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
   opacity: 0;
   pointer-events: none;
-  
+
   /* Add some padding at the bottom so content isn't hugging the nav */
-  padding-bottom: 40px; 
+  padding-bottom: 40px;
 }
 
 /* Ensure the card doesn't get cut off */
@@ -150,7 +176,7 @@ main {
   background: #1a1a1f;
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .photo-upload {
@@ -170,12 +196,12 @@ main {
   height: 180px;
   text-align: center;
   border-radius: 14px;
-   transition: transform 0.25s ease, box-shadow 0.25s ease;
-   -webkit-backface-visibility: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
-  
+
   /* Ensures the border-radius doesn't "leak" or flicker during animation */
   -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
@@ -184,9 +210,11 @@ main {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  flex-shrink: 0; /* Prevents the image from shrinking when sparkles are added */
+  flex-shrink: 0;
+  /* Prevents the image from shrinking when sparkles are added */
   position: relative;
-  z-index: 1; /* Keeps image above the container background */
+  z-index: 1;
+  /* Keeps image above the container background */
   display: block;
   will-change: transform, opacity;
 }
@@ -194,14 +222,22 @@ main {
 
 /* POP when upload finishes */
 .photo-preview.pop {
-  animation: uploadPop 420ms cubic-bezier(.2,1.6,.3,1);
-  box-shadow: 0 0 0 0 rgba(255,255,255,0.6);
+  animation: uploadPop 420ms cubic-bezier(.2, 1.6, .3, 1);
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6);
 }
 
 @keyframes uploadPop {
-  0%   { transform: scale(0.85); }
-  60%  { transform: scale(1.05); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0.85);
+  }
+
+  60% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* Ripple burst */
@@ -209,16 +245,24 @@ main {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
   opacity: 0;
-  z-index: 2; /* Sits on top of the image */
+  z-index: 2;
+  /* Sits on top of the image */
   pointer-events: none;
 }
 
 /* Ensure the ripple actually has a start and end state */
 @keyframes ripple {
-  0% { opacity: 1; transform: scale(0.5); }
-  100% { opacity: 0; transform: scale(1.5); }
+  0% {
+    opacity: 1;
+    transform: scale(0.5);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
 }
 
 .photo-preview.ripple::after {
@@ -240,8 +284,9 @@ main {
 @keyframes sparkle {
   from {
     opacity: 1;
-    transform: translate(0,0) scale(1);
+    transform: translate(0, 0) scale(1);
   }
+
   to {
     opacity: 0;
     transform: translate(var(--x), var(--y)) scale(0.3);
@@ -262,12 +307,21 @@ main {
     background 0.15s ease,
     transform 0.08s ease,
     box-shadow 0.15s ease;
-  
+
 }
+
 @keyframes submitFlash {
-  0%   { background: #6c63ff; }
-  50%  { background: #8b84ff; }
-  100% { background: #6c63ff; }
+  0% {
+    background: #6c63ff;
+  }
+
+  50% {
+    background: #8b84ff;
+  }
+
+  100% {
+    background: #6c63ff;
+  }
 }
 
 .primary-btn.submitted {
@@ -283,6 +337,7 @@ main {
   margin: 10px 0;
   overflow: hidden;
 }
+
 #average-overlay {
   position: absolute;
   top: 50%;
@@ -292,7 +347,7 @@ main {
   pointer-events: none;
   font-size: 5rem;
   font-weight: 900;
-  text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   text-align: center;
   transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -300,12 +355,14 @@ main {
 #average-overlay.active {
   transform: translate(-50%, -50%) scale(1.2);
 }
+
 /* Container sits nicely below the photo */
 .avg-words-container {
   display: flex;
   justify-content: center;
   gap: 8px;
-  margin-top: 6px; /* right under photo */
+  margin-top: 6px;
+  /* right under photo */
   flex-wrap: wrap;
 
   pointer-events: none;
@@ -315,14 +372,15 @@ main {
 
 /* The juicy pill style */
 .avg-word-pill {
-  background: rgba(30, 30, 30, 0.9); /* Dark background */
+  background: rgba(30, 30, 30, 0.9);
+  /* Dark background */
   color: white;
   padding: 8px 16px;
   border-radius: 50px;
   font-size: 1rem;
   font-weight: 700;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-  
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+
   /* Initial State for Animation */
   opacity: 0;
   transform: translateY(20px) scale(0.8);
@@ -334,14 +392,29 @@ main {
 }
 
 @keyframes pillPop {
-  0% { opacity: 0; transform: translateY(20px) scale(0.8); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 @keyframes wordPopUp {
-  0% { opacity: 0; transform: translateY(15px) scale(0.8); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+  0% {
+    opacity: 0;
+    transform: translateY(15px) scale(0.8);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
+
 .avg-label {
   display: block;
   font-size: 1rem;
@@ -349,6 +422,7 @@ main {
   letter-spacing: 2px;
   text-align: center;
 }
+
 .progress-fill {
   width: 0%;
   height: 100%;
@@ -356,17 +430,22 @@ main {
   transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 0 10px rgba(108, 99, 255, 0.5);
 }
+
 .progress-container:has(.progress-fill) {
-    box-shadow: 0 0 15px rgba(108, 99, 255, 0.1);
+  box-shadow: 0 0 15px rgba(108, 99, 255, 0.1);
 }
+
 /* 1. Target the container, not just the image */
 .rate-photo {
   position: relative;
   perspective: 1000px;
   border-radius: 12px;
-  overflow: hidden; /* Clips the animation to the corners */
-  padding: 4px;    /* Space for the "border" */
-  background: #222; /* Your container background */
+  overflow: hidden;
+  /* Clips the animation to the corners */
+  padding: 4px;
+  /* Space for the "border" */
+  background: #222;
+  /* Your container background */
 }
 
 /* The Animated "Border" Layer */
@@ -378,11 +457,9 @@ main {
   width: 200%;
   height: 200%;
   /* We use a CSS variable --accent-color that JS will update */
-  background: conic-gradient(
-    transparent, 
-    var(--accent-color, #fff) 10%, 
-    transparent 20%
-  );
+  background: conic-gradient(transparent,
+      var(--accent-color, #fff) 10%,
+      transparent 20%);
   animation: rotate 3s linear infinite;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -398,15 +475,21 @@ main {
 .rate-photo::after {
   content: '';
   position: absolute;
-  inset: 4px; /* Matches the "border width" */
+  inset: 4px;
+  /* Matches the "border width" */
   background: inherit;
   border-radius: 8px;
   z-index: -1;
 }
 
 @keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* 2. The Group Exit (Photo + Stamp) */
@@ -414,8 +497,9 @@ main {
 .rate-photo {
   /* Give the container 3D depth */
   perspective: 1000px;
-  transition: 
-    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), /* Springy overshoot */
+  transition:
+    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    /* Springy overshoot */
     opacity 0.3s ease,
     filter 0.3s ease;
   will-change: transform, opacity;
@@ -426,8 +510,8 @@ main {
   opacity: 0;
   filter: blur(4px) brightness(1.2);
   transform: translateY(-100px) rotateX(20deg) scale(0.9);
-  transition: 
-    transform 0.25s ease-in, 
+  transition:
+    transform 0.25s ease-in,
     opacity 0.2s ease-in;
 }
 
@@ -436,16 +520,17 @@ main {
   opacity: 0;
   filter: brightness(0.8);
   transform: scale(0.5) translateY(50px);
-  transition: none !important; /* Instant reset */
+  transition: none !important;
+  /* Instant reset */
 }
 
 .rate-photo img {
   width: 100%;
   height: auto;
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   /* Smoothly fade the image pixels themselves */
-  transition: opacity 0.2s ease; 
+  transition: opacity 0.2s ease;
 }
 
 .rate-photo img {
@@ -463,48 +548,65 @@ main {
 }
 
 @keyframes explode {
-  0% { transform: translate(0, 0) scale(1); opacity: 1; }
-  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(0);
+    opacity: 0;
+  }
 }
+
 /* Armed = ready to submit */
 .primary-btn.armed {
-  background: #6c63ff; /* Solid brand color */
+  background: #6c63ff;
+  /* Solid brand color */
   color: white;
   cursor: pointer;
-  
+
   /* 1. The "Color Bloom" - A soft glow that feels high-end, not neon */
-  box-shadow: 
+  box-shadow:
     0 10px 20px -10px rgba(108, 99, 255, 0.5),
-    0 0 20px -5px var(--submit-color); /* The rating-specific "aura" */
+    0 0 20px -5px var(--submit-color);
+  /* The rating-specific "aura" */
 
   /* 2. The "Impact Pop" - Physics-based entrance */
   animation: juicyPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-  
-  transition: 
-    box-shadow 0.3s ease, 
+
+  transition:
+    box-shadow 0.3s ease,
     transform 0.1s active;
 }
+
 .rating-bridge {
   /* Default State: Small, subtle white pill */
   width: 40px;
   height: 4px;
   background: rgba(255, 255, 255, 0.15);
   border-radius: 10px;
-  margin: 12px auto; /* Centers it and adds spacing */
-  
+  margin: 12px auto;
+  /* Centers it and adds spacing */
+
   /* The "Juice" Transitions */
-  transition: 
-    width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), /* Bouncy width */
+  transition:
+    width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    /* Bouncy width */
     background 0.3s ease,
     box-shadow 0.3s ease;
 }
 
 /* When a rating is active */
 .rating-bridge.active {
-  width: 120px; /* Expands to connect the UI elements */
-  background: var(--bridge-color, #fff); /* Dynamic Color */
-  box-shadow: 0 0 15px var(--bridge-color); /* Glows */
+  width: 120px;
+  /* Expands to connect the UI elements */
+  background: var(--bridge-color, #fff);
+  /* Dynamic Color */
+  box-shadow: 0 0 15px var(--bridge-color);
+  /* Glows */
 }
+
 .share-results-wrapper {
   text-align: center;
   margin: 20px 0;
@@ -548,23 +650,58 @@ main {
   opacity: 0;
   transition: opacity 0.3s;
 }
+.mode-selector {
+  display: flex;
+  background: #0f0f12; /* Matches your main BG to create a "cutout" look */
+  border: 1px solid #333338; /* Subtle border to define the shape */
+  border-radius: 12px;
+  padding: 4px;
+  margin: 0 auto 20px auto; /* Centers it and adds spacing */
+  width: fit-content;
+}
+
+.mode-btn {
+  border: none;
+  background: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #88888b; /* Dimmed text for inactive state */
+  transition: all 0.3s ease;
+}
+
+.mode-btn.active {
+  background: #1a1a1f; /* Matches your card color */
+  color: #ffffff;      /* Bright white for active state */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* Adds depth */
+}
+
+/* Hover effect for desktop users */
+.mode-btn:hover:not(.active) {
+  color: #bbb;
+}
 
 .copy-toast.show {
   opacity: 1;
 }
+
 /* Specific Tweak for Rating 10 (Fire) */
-.rate-photo.is-on-fire ~ .rating-bridge {
+.rate-photo.is-on-fire~.rating-bridge {
   width: 160px;
   background: linear-gradient(90deg, #ff3d00, #ffca28);
   height: 6px;
 }
 
 /* Specific Tweak for Rating 1 (Ice) */
-.rate-photo.is-frozen ~ .rating-bridge {
-  width: 100%; /* Spans the whole width like a flatline */
+.rate-photo.is-frozen~.rating-bridge {
+  width: 100%;
+  /* Spans the whole width like a flatline */
   background: #2c2c2c;
   opacity: 0.5;
 }
+
 /* 3. Tactile Press - Like pushing a real rubber button */
 .primary-btn.armed:active {
   transform: scale(0.94) translateY(2px);
@@ -573,9 +710,18 @@ main {
 
 /* Squash and Stretch Animation */
 @keyframes juicyPop {
-  0% { transform: scale(0.9); }
-  50% { transform: scale(1.05); } /* Slight overshoot */
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0.9);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  /* Slight overshoot */
+  100% {
+    transform: scale(1);
+  }
 }
 
 
@@ -635,13 +781,16 @@ input[type="text"] {
   font-size: 13px;
   color: #aaa;
 }
+
 .card h2 {
   text-align: center;
 }
+
 .tab.locked {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
 .link-btn {
   margin-top: 14px;
   background: none;
@@ -655,7 +804,7 @@ input[type="text"] {
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -665,42 +814,49 @@ input[type="text"] {
 .modal.hidden {
   display: none;
 }
+
 .rating-scale {
-  position: relative; /* Crucial for the triangle position */
+  position: relative;
+  /* Crucial for the triangle position */
   display: flex;
   justify-content: center;
   align-items: flex-end;
   gap: 8px;
-  margin-top: 30px; /* Extra space for the triangle above */
+  margin-top: 30px;
+  /* Extra space for the triangle above */
 }
 
 /* The Red Triangle */
 .selection-indicator {
   position: absolute;
   /* Start at the bottom baseline where the buttons sit */
-  bottom: 10px; 
+  bottom: 10px;
   left: 0;
   width: 16px;
   height: 10px;
   background-color: #ff3d00;
   clip-path: polygon(100% 0, 0 0, 50% 100%);
-  
+
   /* Bouncy movement */
   transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   pointer-events: none;
-  opacity: 0; /* Hidden until first click */
+  opacity: 0;
+  /* Hidden until first click */
 }
 
 .selection-indicator.active {
   opacity: 1;
 }
+
 /* 1. The Container (Crucial for the "Bar Graph" look) */
 .rating-container {
   display: flex;
-  align-items: flex-end; /* This makes the growth feel impactful */
+  align-items: flex-end;
+  /* This makes the growth feel impactful */
   gap: 8px;
   padding: 40px 20px;
-  background: #1a1a1e; /* Dark background to make colors pop */
+  background: #1a1a1e;
+  /* Dark background to make colors pop */
 }
 
 /* 2. Unified Base Style */
@@ -708,14 +864,15 @@ input[type="text"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.05); /* Subtle rim light */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  /* Subtle rim light */
   border-radius: 50px;
   cursor: pointer;
   background: #2a2a32;
   color: #888;
   font-weight: 600;
   /* Smoother transition with a soft 'bounce' */
-  transition: 
+  transition:
     transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
     background 0.3s ease,
     box-shadow 0.3s ease,
@@ -734,36 +891,38 @@ input[type="text"] {
   color: #fff;
 
   background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,0.25),
-      rgba(0,0,0,0.2)
-    ),
+    linear-gradient(180deg,
+      rgba(255, 255, 255, 0.25),
+      rgba(0, 0, 0, 0.2)),
     var(--btn-color);
 
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.35),
-    0 14px 30px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 14px 30px rgba(0, 0, 0, 0.45),
     0 0 22px var(--btn-color);
 }
+
 .rating-btn:active {
   transform: translateY(-6px) scale(1.05);
   filter: brightness(1.15);
 }
+
 /* 1. The Rock Bottom (1) */
 .rating-btn[data-value="1"] {
-  width: 34px; 
-  height: 44px; 
+  width: 34px;
+  height: 44px;
   font-size: 12px;
   font-weight: 800;
   background: linear-gradient(180deg, #2a2a32, #1a1a1a);
   color: #fff;
-  box-shadow: inset 0 1px 1px rgba(255,255,255,0.05);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
 }
 
 .rating-btn.selected[data-value="1"] {
-  background: #1a1a1a !important; /* Deep "void" black */
-  color: #ff4d4d; /* Warning red text */
+  background: #1a1a1a !important;
+  /* Deep "void" black */
+  color: #ff4d4d;
+  /* Warning red text */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(255, 0, 0, 0.2);
   animation: heavyShudder 0.6s infinite ease-in-out;
   border-color: #ff4d4d;
@@ -771,11 +930,25 @@ input[type="text"] {
 
 /* Shudder animation: feels unstable and heavy */
 @keyframes heavyShudder {
-  0% { transform: translateY(2px) translateX(0); }
-  25% { transform: translateY(3px) translateX(-1px); }
-  50% { transform: translateY(2px) translateX(1px); }
-  75% { transform: translateY(3px) translateX(-1px); }
-  100% { transform: translateY(2px) translateX(0); }
+  0% {
+    transform: translateY(2px) translateX(0);
+  }
+
+  25% {
+    transform: translateY(3px) translateX(-1px);
+  }
+
+  50% {
+    transform: translateY(2px) translateX(1px);
+  }
+
+  75% {
+    transform: translateY(3px) translateX(-1px);
+  }
+
+  100% {
+    transform: translateY(2px) translateX(0);
+  }
 }
 
 /* 4. The Satisfying Progression (Sizes & Colors) */
@@ -783,36 +956,108 @@ input[type="text"] {
 
 
 /* 2-3: The "Meh" Zone (Cold & Heavy) */
-.rating-btn[data-value="2"] { width: 36px; height: 48px; font-size: 12px; --btn-color: #37474f; }
-.rating-btn.selected[data-value="2"] { background: #37474f; box-shadow: 0 10px 20px rgba(55, 71, 79, 0.4); }
+.rating-btn[data-value="2"] {
+  width: 36px;
+  height: 48px;
+  font-size: 12px;
+  --btn-color: #37474f;
+}
 
-.rating-btn[data-value="3"] { width: 38px; height: 52px; font-size: 13px; --btn-color: #455a64; }
-.rating-btn.selected[data-value="3"] { background: #455a64; box-shadow: 0 10px 20px rgba(69, 90, 100, 0.4); }
+.rating-btn.selected[data-value="2"] {
+  background: #37474f;
+  box-shadow: 0 10px 20px rgba(55, 71, 79, 0.4);
+}
+
+.rating-btn[data-value="3"] {
+  width: 38px;
+  height: 52px;
+  font-size: 13px;
+  --btn-color: #455a64;
+}
+
+.rating-btn.selected[data-value="3"] {
+  background: #455a64;
+  box-shadow: 0 10px 20px rgba(69, 90, 100, 0.4);
+}
 
 /* 4-5: Getting Better (Stable & Neutral) */
-.rating-btn[data-value="4"] { width: 40px; height: 56px; font-size: 13px; --btn-color: #00695c; }
-.rating-btn.selected[data-value="4"] { background: #00695c; box-shadow: 0 10px 20px rgba(0, 105, 92, 0.4); }
+.rating-btn[data-value="4"] {
+  width: 40px;
+  height: 56px;
+  font-size: 13px;
+  --btn-color: #00695c;
+}
 
-.rating-btn[data-value="5"] { width: 42px; height: 60px; font-size: 14px; --btn-color: #3949ab; }
-.rating-btn.selected[data-value="5"] { background: #3949ab; box-shadow: 0 10px 20px rgba(57, 73, 171, 0.4); }
+.rating-btn.selected[data-value="4"] {
+  background: #00695c;
+  box-shadow: 0 10px 20px rgba(0, 105, 92, 0.4);
+}
+
+.rating-btn[data-value="5"] {
+  width: 42px;
+  height: 60px;
+  font-size: 14px;
+  --btn-color: #3949ab;
+}
+
+.rating-btn.selected[data-value="5"] {
+  background: #3949ab;
+  box-shadow: 0 10px 20px rgba(57, 73, 171, 0.4);
+}
 
 /* 6-7: Creative Spark (Vibrant & Energetic) */
-.rating-btn[data-value="6"] { width: 44px; height: 64px; font-size: 14px; --btn-color: #8e24aa; }
-.rating-btn.selected[data-value="6"] { background: #8e24aa; box-shadow: 0 10px 20px rgba(142, 36, 170, 0.4); }
+.rating-btn[data-value="6"] {
+  width: 44px;
+  height: 64px;
+  font-size: 14px;
+  --btn-color: #8e24aa;
+}
 
-.rating-btn[data-value="7"] { width: 46px; height: 68px; font-size: 15px; --btn-color: #d81b60; }
-.rating-btn.selected[data-value="7"] { background: #d81b60; box-shadow: 0 10px 20px rgba(216, 27, 96, 0.4); }
+.rating-btn.selected[data-value="6"] {
+  background: #8e24aa;
+  box-shadow: 0 10px 20px rgba(142, 36, 170, 0.4);
+}
+
+.rating-btn[data-value="7"] {
+  width: 46px;
+  height: 68px;
+  font-size: 15px;
+  --btn-color: #d81b60;
+}
+
+.rating-btn.selected[data-value="7"] {
+  background: #d81b60;
+  box-shadow: 0 10px 20px rgba(216, 27, 96, 0.4);
+}
 
 /* 8-9: Almost Perfect (Heating Up) */
-.rating-btn[data-value="8"] { width: 48px; height: 72px; font-size: 15px; --btn-color: #e64a19; }
-.rating-btn.selected[data-value="8"] { background: #e64a19; box-shadow: 0 10px 20px rgba(230, 74, 25, 0.4); }
+.rating-btn[data-value="8"] {
+  width: 48px;
+  height: 72px;
+  font-size: 15px;
+  --btn-color: #e64a19;
+}
 
-.rating-btn[data-value="9"] { width: 50px; height: 78px; font-size: 16px; --btn-color: #fb8c00; }
-.rating-btn.selected[data-value="9"] { background: #fb8c00; box-shadow: 0 10px 20px rgba(251, 140, 0, 0.4); }
+.rating-btn.selected[data-value="8"] {
+  background: #e64a19;
+  box-shadow: 0 10px 20px rgba(230, 74, 25, 0.4);
+}
+
+.rating-btn[data-value="9"] {
+  width: 50px;
+  height: 78px;
+  font-size: 16px;
+  --btn-color: #fb8c00;
+}
+
+.rating-btn.selected[data-value="9"] {
+  background: #fb8c00;
+  box-shadow: 0 10px 20px rgba(251, 140, 0, 0.4);
+}
 
 /* 5. The Grand Finale (10) */
 .rating-btn[data-value="10"] {
-  width: 62px; 
+  width: 62px;
   height: 90px;
   font-size: 18px;
   font-weight: 800;
@@ -827,24 +1072,42 @@ input[type="text"] {
 }
 
 @keyframes ultraPulse {
-  0% { transform: translateY(-12px) scale(1.1); filter: brightness(1); }
-  50% { transform: translateY(-15px) scale(1.15); filter: brightness(1.2); }
-  100% { transform: translateY(-12px) scale(1.1); filter: brightness(1); }
+  0% {
+    transform: translateY(-12px) scale(1.1);
+    filter: brightness(1);
+  }
+
+  50% {
+    transform: translateY(-15px) scale(1.15);
+    filter: brightness(1.2);
+  }
+
+  100% {
+    transform: translateY(-12px) scale(1.1);
+    filter: brightness(1);
+  }
 }
-.rating-btn[data-value="1"] { --btn-color: #2c2c2c; }
-.rating-btn[data-value="10"] {--btn-color: #ff7a18;}
+
+.rating-btn[data-value="1"] {
+  --btn-color: #2c2c2c;
+}
+
+.rating-btn[data-value="10"] {
+  --btn-color: #ff7a18;
+}
 
 .rate-photo {
   position: relative;
 }
+
 /* 1. The Refined Fire Container */
 .rate-photo.is-on-fire {
   /* Keep the deep glow, but soften the edges */
-  box-shadow: 
+  box-shadow:
     0 0 15px #ff3d00,
     0 0 30px #ff7a18,
     0 0 50px rgba(255, 202, 40, 0.4) !important;
-  
+
   /* Swap the jitter for a smooth breathing effect */
   animation: firePulse 2s infinite ease-in-out;
   transition: transform 0.3s ease, box-shadow 0.4s ease;
@@ -852,41 +1115,44 @@ input[type="text"] {
 
 /* 2. Slower, more "fluid" border rotation */
 .rate-photo.is-on-fire::before {
-  background: conic-gradient(
-    transparent, 
-    #ff3d00 10%, 
-    #ffca28 20%, 
-    transparent 40%
-  );
+  background: conic-gradient(transparent,
+      #ff3d00 10%,
+      #ffca28 20%,
+      transparent 40%);
   /* Slowed down from 0.8s to 2s for a "flowing magma" look */
-  animation-duration: 2s; 
+  animation-duration: 2s;
 }
 
 /* 3. The "Breathing" Animation (Instead of the Jitter) */
 @keyframes firePulse {
-  0% { 
-    transform: scale(1); 
+  0% {
+    transform: scale(1);
     filter: brightness(1);
   }
-  50% { 
-    transform: scale(1.02); /* Very subtle growth */
-    filter: brightness(1.15); /* Slight flicker of light */
+
+  50% {
+    transform: scale(1.02);
+    /* Very subtle growth */
+    filter: brightness(1.15);
+    /* Slight flicker of light */
   }
-  100% { 
-    transform: scale(1); 
+
+  100% {
+    transform: scale(1);
     filter: brightness(1);
   }
 }
+
 /* The "1" Effect: Cold & Heavy */
 .rate-photo.is-frozen {
   /* Cold, dark blue/gray glow */
-  box-shadow: 
+  box-shadow:
     0 0 15px #1a1a1a,
     0 0 30px rgba(0, 153, 255, 0.2) !important;
-  
+
   /* Drains the life/color out of the photo */
   filter: grayscale(100%) brightness(0.8);
-  
+
   /* A subtle "shiver" animation */
   animation: shiver 0.4s infinite;
   transition: all 0.5s ease;
@@ -894,23 +1160,37 @@ input[type="text"] {
 
 /* Slow, dim border for the "1" state */
 .rate-photo.is-frozen::before {
-  background: conic-gradient(
-    transparent, 
-    #2c2c2c 10%, 
-    #004e92 20%, 
-    transparent 40%
-  );
-  animation-duration: 8s; /* Very slow, almost stagnant */
+  background: conic-gradient(transparent,
+      #2c2c2c 10%,
+      #004e92 20%,
+      transparent 40%);
+  animation-duration: 8s;
+  /* Very slow, almost stagnant */
 }
 
 /* The Shiver: High frequency, very low movement */
 @keyframes shiver {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(0.5px); }
-  50% { transform: translateX(-0.5px); }
-  75% { transform: translateX(0.5px); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(0.5px);
+  }
+
+  50% {
+    transform: translateX(-0.5px);
+  }
+
+  75% {
+    transform: translateX(0.5px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
+
 #photoRatingBadge {
   position: absolute;
   top: 14px;
@@ -926,34 +1206,39 @@ input[type="text"] {
   font-size: 32px;
   font-weight: 900;
   letter-spacing: -1.5px;
-  
+
   /* 1. Glass Effect: Blur the background behind the badge */
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  
+
   /* 2. Colors: Use a semi-transparent background so the light passes through */
-  background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
-  color: #fff; /* White text usually looks more "premium" on colored glass */
-  
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  color: #fff;
+  /* White text usually looks more "premium" on colored glass */
+
   /* 3. The "Rim" Light: Instead of a thick border, use a thin, bright top edge */
   border: 1px solid rgba(255, 255, 255, 0.4);
-  
+
   /* 4. Layered Depth: 
      - A sharp shadow for lift 
      - A colored glow for 'juice' 
      - An inner highlight for thickness */
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.3),            /* Grounding shadow */
-    inset 0 0 0 2px var(--rating-color),      /* Inner colored ring */
-    0 0 20px var(--rating-color);             /* Outer glow */
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    /* Grounding shadow */
+    inset 0 0 0 2px var(--rating-color),
+    /* Inner colored ring */
+    0 0 20px var(--rating-color);
+  /* Outer glow */
 
   /* 5. Natural Tilt */
   transform: scale(0.6) rotate(-12deg);
   opacity: 0;
-  
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+
 #resultsContainer {
   margin-top: 20px;
   padding: 20px;
@@ -968,9 +1253,11 @@ input[type="text"] {
   background: linear-gradient(90deg, transparent, #6c63ff, transparent);
   margin-bottom: 20px;
 }
+
 .rate-photo img.loading {
   opacity: 0;
 }
+
 /* Container for the tags */
 .impressions-grid {
   display: flex;
@@ -988,7 +1275,8 @@ input[type="text"] {
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 0.9rem;
-  opacity: 0; /* Start hidden for animation */
+  opacity: 0;
+  /* Start hidden for animation */
   transform: translateY(10px);
   animation: tagPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
@@ -1006,12 +1294,14 @@ input[type="text"] {
     transform: translateY(0);
   }
 }
+
 .my-avg-rating {
   font-size: 4rem;
   font-weight: 900;
   margin: 10px 0;
-  text-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
+
 .curve-container {
   margin: 20px 0;
   width: 100%;
@@ -1029,7 +1319,8 @@ input[type="text"] {
 
 .graph-wrapper {
   position: relative;
-  height: 80px; /* Adjust height as needed */
+  height: 80px;
+  /* Adjust height as needed */
   width: 100%;
 }
 
@@ -1043,11 +1334,13 @@ input[type="text"] {
 .marker {
   position: absolute;
   bottom: 0;
-  left: 0%; /* JS will change this */
+  left: 0%;
+  /* JS will change this */
   display: flex;
   flex-direction: column;
   align-items: center;
-  transform: translateX(-50%); /* Centers the pin on the specific % */
+  transform: translateX(-50%);
+  /* Centers the pin on the specific % */
   transition: left 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -1056,13 +1349,14 @@ input[type="text"] {
   height: 12px;
   background: #fff;
   border-radius: 50%;
-  box-shadow: 0 0 10px rgba(255,255,255,0.8);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
   margin-bottom: 2px;
 }
 
 .marker-line {
   width: 2px;
-  height: 45px; /* Height of the line dropping down */
+  height: 45px;
+  /* Height of the line dropping down */
   background: linear-gradient(to bottom, #fff, transparent);
 }
 
@@ -1083,7 +1377,8 @@ input[type="text"] {
   width: 100%;
   font-size: 0.7rem;
   color: #666;
-  margin-top: -10px; /* Pull it up a bit */
+  margin-top: -10px;
+  /* Pull it up a bit */
   padding: 0 10px;
   box-sizing: border-box;
 }
@@ -1093,6 +1388,7 @@ input[type="text"] {
   color: #bbb;
   margin-top: 5px;
 }
+
 .results-note {
   font-size: 0.8rem;
   opacity: 0.6;
@@ -1102,8 +1398,9 @@ input[type="text"] {
 .hidden {
   display: none !important;
 }
+
 #photoRatingBadge.show {
-  animation: stampPop 220ms cubic-bezier(.2,1.4,.4,1) forwards;
+  animation: stampPop 220ms cubic-bezier(.2, 1.4, .4, 1) forwards;
 }
 
 @keyframes stampPop {
@@ -1111,10 +1408,12 @@ input[type="text"] {
     transform: scale(1.8) rotate(calc(var(--badge-rotation) - 10deg));
     opacity: 0;
   }
+
   60% {
     transform: scale(0.95) rotate(calc(var(--badge-rotation) + 3deg));
     opacity: 1;
   }
+
   100% {
     transform: scale(1) rotate(var(--badge-rotation));
     opacity: 1;
@@ -1136,7 +1435,8 @@ input[type="text"] {
 
 #photoRatingBadge span {
   transform: translateY(2px) translateX(-1px);
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* lift text slightly */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  /* lift text slightly */
 }
 
 
