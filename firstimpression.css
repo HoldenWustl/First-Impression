@@ -468,16 +468,34 @@ main {
 }
 /* Armed = ready to submit */
 .primary-btn.armed {
-  background: #6c63ff;
+  background: #6c63ff; /* Solid brand color */
   color: white;
   cursor: pointer;
-  box-shadow: 0 10px 24px rgba(108, 99, 255, 0.35);
+  
+  /* 1. The "Color Bloom" - A soft glow that feels high-end, not neon */
+  box-shadow: 
+    0 10px 20px -10px rgba(108, 99, 255, 0.5),
+    0 0 20px -5px var(--submit-color); /* The rating-specific "aura" */
+
+  /* 2. The "Impact Pop" - Physics-based entrance */
+  animation: juicyPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+  
+  transition: 
+    box-shadow 0.3s ease, 
+    transform 0.1s active;
 }
 
-/* Press feedback */
+/* 3. Tactile Press - Like pushing a real rubber button */
 .primary-btn.armed:active {
-  transform: scale(0.96);
-  box-shadow: 0 6px 16px rgba(108, 99, 255, 0.25);
+  transform: scale(0.94) translateY(2px);
+  box-shadow: 0 4px 8px -4px var(--submit-color);
+}
+
+/* Squash and Stretch Animation */
+@keyframes juicyPop {
+  0% { transform: scale(0.9); }
+  50% { transform: scale(1.05); } /* Slight overshoot */
+  100% { transform: scale(1); }
 }
 
 
