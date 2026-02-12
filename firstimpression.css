@@ -262,6 +262,7 @@ main {
     background 0.15s ease,
     transform 0.08s ease,
     box-shadow 0.15s ease;
+  
 }
 @keyframes submitFlash {
   0%   { background: #6c63ff; }
@@ -738,7 +739,46 @@ input[type="text"] {
 .rate-photo {
   position: relative;
 }
+/* 1. The Refined Fire Container */
+.rate-photo.is-on-fire {
+  /* Keep the deep glow, but soften the edges */
+  box-shadow: 
+    0 0 15px #ff3d00,
+    0 0 30px #ff7a18,
+    0 0 50px rgba(255, 202, 40, 0.4) !important;
+  
+  /* Swap the jitter for a smooth breathing effect */
+  animation: firePulse 2s infinite ease-in-out;
+  transition: transform 0.3s ease, box-shadow 0.4s ease;
+}
 
+/* 2. Slower, more "fluid" border rotation */
+.rate-photo.is-on-fire::before {
+  background: conic-gradient(
+    transparent, 
+    #ff3d00 10%, 
+    #ffca28 20%, 
+    transparent 40%
+  );
+  /* Slowed down from 0.8s to 2s for a "flowing magma" look */
+  animation-duration: 2s; 
+}
+
+/* 3. The "Breathing" Animation (Instead of the Jitter) */
+@keyframes firePulse {
+  0% { 
+    transform: scale(1); 
+    filter: brightness(1);
+  }
+  50% { 
+    transform: scale(1.02); /* Very subtle growth */
+    filter: brightness(1.15); /* Slight flicker of light */
+  }
+  100% { 
+    transform: scale(1); 
+    filter: brightness(1);
+  }
+}
 #photoRatingBadge {
   position: absolute;
   top: 14px;
