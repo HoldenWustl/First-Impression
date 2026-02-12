@@ -813,36 +813,44 @@ function handleSwipe() {
 
 
 document.getElementById('shareResultsBtn').addEventListener('click', async () => {
-  const avg = document.querySelector(".my-avg-rating").textContent.split(' ')[0];
-  const words = Array.from(document.querySelectorAll(".word-tag")).map(el => el.textContent);
-  const topWord = words.length > 0 ? words[0] : "Mysterious"; // Takes the most recent word
+  const resultsElement = document.getElementById('resultsContainer');
+  
+  // 1. Capture the element as a Canvas
+  const canvas = await html2canvas(resultsElement, {
+    backgroundColor: '#1a1a1f', // Match your card color
+    scale: 2, // Higher quality
+  });
 
-  const shareData = {
-    title: 'First Impression',
-    text: `People think my vibe is "${topWord}"! I got a ${avg}/10 score on First Impression. See what people think of you:`,
-    url: window.location.origin // Or your specific app URL
-  };
+  // 2. Convert Canvas to a Blob (File)
+  canvas.toBlob(async (blob) => {
+    const file = new File([blob], 'my-vibe.png', { type: 'image/png' });
+    
+    const avg = document.querySelector(".my-avg-rating").textContent.split(' ')[0];
+    const words = Array.from(document.querySelectorAll(".word-tag")).map(el => el.textContent);
+    const topWord = words[0] || "Mysterious";
 
-  try {
-    if (navigator.share) {
-      // Use native mobile share sheet (Instagram, WhatsApp, etc.)
-      await navigator.share(shareData);
-    } else {
-      // Fallback: Copy to clipboard
-      const fallbackText = `${shareData.text} ${shareData.url}`;
-      await navigator.clipboard.writeText(fallbackText);
-      showToast();
+    const shareData = {
+      title: 'First Impression',
+      text: `People think my vibe is "${topWord}"! Check yours:`,
+      url: window.location.origin,
+      files: [file] // <--- This is the magic part!
+    };
+
+    try {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback: Just download the image if sharing isn't supported
+        const link = document.createElement('a');
+        link.download = 'my-first-impression.png';
+        link.href = URL.createObjectURL(blob);
+        link.click();
+      }
+    } catch (err) {
+      console.error("Share failed", err);
     }
-  } catch (err) {
-    console.log("Share failed", err);
-  }
+  }, 'image/png');
 });
-
-function showToast() {
-  const toast = document.getElementById('copyToast');
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2000);
-}
 
 let currentMode = 'new'; // Default mode
 
